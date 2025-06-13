@@ -109,22 +109,25 @@
         }
     }
 
+    // *** MODIFIED FUNCTION ***
     function renderPendingOrdersTab() {
-        const pendingQuotes = db.Quotes_To_Buyers.filter(q => q.Status === 'Accepted');
+        // 找出所有已經在訂單中的報價ID
+        const orderedQuoteIds = new Set(db.Order_Line_Items.map(item => item.QuoteToBuyerID));
+
+        // 篩選出狀態為 "Accepted" 且尚未被建立訂單的報價
+        const pendingQuotes = db.Quotes_To_Buyers.filter(q => 
+            q.Status === 'Accepted' && 
+            !orderedQuoteIds.has(q.QuoteToBuyerID)
+        );
+
         return `
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <div class="p-4 border-b">
-                    <p class="text-sm text-gray-600">集中顯示所有已談妥 (狀態為 Accepted) 但尚未建立正式訂單的報價項目，作為業務的待辦清單。</p>
-                </div>
-                <div class="overflow-x-auto">
+                 <div class="p-4 border-b"><p class="text-sm text-gray-600">集中顯示所有已談妥 (狀態為 Accepted) 但尚未建立正式訂單的報價項目，作為業務的待辦清單。</p></div>
+                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead class="bg-gray-100"><tr>
-                            <th class="p-3 text-left font-semibold">購買者名稱</th>
-                            <th class="p-3 text-left font-semibold">產品名稱</th>
-                            <th class="p-3 text-left font-semibold">供應商名稱</th>
-                            <th class="p-3 text-left font-semibold">最終成交價</th>
-                            <th class="p-3 text-left font-semibold">報價時間</th>
-                            <th class="p-3 text-left font-semibold">操作</th>
+                            <th class="p-3 text-left font-semibold">購買者名稱</th><th class="p-3 text-left font-semibold">產品名稱</th><th class="p-3 text-left font-semibold">供應商名稱</th>
+                            <th class="p-3 text-left font-semibold">最終成交價</th><th class="p-3 text-left font-semibold">報價時間</th><th class="p-3 text-left font-semibold">操作</th>
                         </tr></thead>
                         <tbody class="divide-y divide-gray-200">
                         ${pendingQuotes.map(q => {
@@ -133,16 +136,11 @@
                             const supplier = findById('Suppliers', product?.SupplierID, 'SupplierID');
                             const finalPrice = q.QuotedPrice || q.CustomerExpectedPrice;
                             return `<tr class="hover:bg-gray-50">
-                                <td class="p-3">${buyer?.BuyerName}</td>
-                                <td class="p-3">${product?.ProductDisplayName}</td>
-                                <td class="p-3">${supplier?.SupplierName}</td>
-                                <td class="p-3 font-bold">$${finalPrice.toLocaleString()}</td>
-                                <td class="p-3">${formatDateTime(q.QuoteTimestamp)}</td>
-                                <td class="p-3">
-                                    <a href="./buyer-detail.html?id=${q.BuyerID}&tab=pendingOrders" class="text-indigo-600 hover:text-indigo-800 font-semibold">前往開單</a>
-                                </td>
+                                <td class="p-3">${buyer?.BuyerName}</td><td class="p-3">${product?.ProductDisplayName}</td><td class="p-3">${supplier?.SupplierName}</td>
+                                <td class="p-3 font-bold">$${finalPrice.toLocaleString()}</td><td class="p-3">${formatDateTime(q.QuoteTimestamp)}</td>
+                                <td class="p-3"><a href="./buyer-detail.html?id=${q.BuyerID}&tab=pendingOrders" class="text-indigo-600 hover:text-indigo-800 font-semibold">前往開單</a></td>
                             </tr>`
-                        }).join('')}
+                        }).join('') || `<tr><td colspan="6" class="p-8 text-center text-gray-400">沒有待處理的訂單項目</td></tr>`}
                         </tbody>
                     </table>
                 </div>
@@ -153,30 +151,14 @@
     function renderFormalOrdersTab() {
         return `
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <div class="p-4 border-b">
-                     <p class="text-sm text-gray-600">展示、搜尋、篩選所有已成立的正式訂單。</p>
-                </div>
+                <div class="p-4 border-b"><p class="text-sm text-gray-600">展示、搜尋、篩選所有已成立的正式訂單。</p></div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
-                        <thead class="bg-gray-100"><tr>
-                            <th class="p-3 text-left font-semibold">訂單編號</th>
-                            <th class="p-3 text-left font-semibold">購買者</th>
-                            <th class="p-3 text-left font-semibold">供應商</th>
-                            <th class="p-3 text-left font-semibold">訂單狀態</th>
-                            <th class="p-3 text-left font-semibold">訂單建立時間</th>
-                            <th class="p-3 text-left font-semibold">操作</th>
-                        </tr></thead>
+                        <thead class="bg-gray-100"><tr><th class="p-3 text-left font-semibold">訂單編號</th><th class="p-3 text-left font-semibold">購買者</th><th class="p-3 text-left font-semibold">供應商</th><th class="p-3 text-left font-semibold">訂單狀態</th><th class="p-3 text-left font-semibold">訂單建立時間</th><th class="p-3 text-left font-semibold">操作</th></tr></thead>
                         <tbody class="divide-y divide-gray-200">
                             ${db.Orders.map(o => `
-                                <tr class="hover:bg-gray-50">
-                                    <td class="p-3 font-mono">${o.OrderNumber}</td>
-                                    <td class="p-3">${findById('Buyers', o.BuyerID, 'BuyerID')?.BuyerName}</td>
-                                    <td class="p-3">${findById('Suppliers', o.SupplierID, 'SupplierID')?.SupplierName}</td>
-                                    <td class="p-3">${getStatusBadge(o.OrderStatus)}</td>
-                                    <td class="p-3">${formatDateTime(o.SystemCreatedAt)}</td>
-                                    <td class="p-3">
-                                        <a href="./order-detail.html?id=${o.OrderID}" class="text-indigo-600 hover:text-indigo-800 font-semibold">查看詳情</a>
-                                    </td>
+                                <tr class="hover:bg-gray-50"><td class="p-3 font-mono">${o.OrderNumber}</td><td class="p-3">${findById('Buyers', o.BuyerID, 'BuyerID')?.BuyerName}</td><td class="p-3">${findById('Suppliers', o.SupplierID, 'SupplierID')?.SupplierName}</td><td class="p-3">${getStatusBadge(o.OrderStatus)}</td><td class="p-3">${formatDateTime(o.SystemCreatedAt)}</td>
+                                    <td class="p-3"><a href="./order-detail.html?id=${o.OrderID}" class="text-indigo-600 hover:text-indigo-800 font-semibold">查看詳情</a></td>
                                 </tr>
                             `).join('')}
                         </tbody>

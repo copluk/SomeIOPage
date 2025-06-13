@@ -114,6 +114,7 @@
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         const nowString = now.toISOString().slice(0,16);
+
         switch(type) {
             case 'add-cost':
                 return `<div class="space-y-4"><div><label class="${labelClass}">供應商出價</label><input type="number" class="${inputClass}" placeholder="e.g., 1800"></div><div><label class="${labelClass}">成本價 (需高於供應商出價)</label><input type="number" class="${inputClass}" placeholder="e.g., 1850"></div><div><label class="${labelClass}">出價時間</label><input type="datetime-local" value="${nowString}" class="${inputClass}"></div></div>`;
@@ -125,6 +126,7 @@
             default: return '';
         }
     }
+
 
     function renderPage(productId) {
         const pageContent = document.getElementById('page-content');
@@ -147,14 +149,16 @@
         return `<div class="bg-white p-6 rounded-lg shadow-md mt-8"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-xl font-bold text-gray-800">供應商報價 (內部成本) 區</h3><button data-action="show-add-cost-modal" class="bg-orange-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-orange-600">新增成本</button></div><div class="overflow-x-auto"><table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-3 text-left font-semibold text-gray-600">出價時間</th><th class="p-3 text-left font-semibold text-gray-600">供應商出價</th><th class="p-3 text-left font-semibold text-gray-600">成本價</th></tr></thead><tbody class="divide-y divide-gray-200">${allSupplierQuotes.map(sq => `<tr class="hover:bg-gray-50"><td class="p-3">${formatDateTime(sq.EffectiveTimestamp)}</td><td class="p-3">$${sq.SupplierOriginalPrice.toLocaleString()}</td><td class="p-3 text-red-600 font-semibold">$${sq.InternalCostPrice.toLocaleString()}</td></tr>`).join('')}</tbody></table></div></div>`;
     }
 
+    // *** MODIFIED FUNCTION ***
     function renderQuotesToBuyers(product, allSupplierQuotes) {
         const latestSupplierQuote = allSupplierQuotes[0] || null;
+        const historicalQuotes = allSupplierQuotes.slice(1);
         
-        // *** MODIFIED LOGIC START ***
+        const orderedQuoteIds = new Set(db.Order_Line_Items.map(item => item.QuoteToBuyerID));
+
         const renderNegotiationTable = (quotes) => {
             if (quotes.length === 0) return `<p class="text-sm text-gray-500 px-3 py-4">此時段無對外報價紀錄。</p>`;
             
-            // 找出此時段中，每個購買者的最新報價
             const latestQuotesByBuyer = new Map();
             quotes.forEach(q => {
                 const existing = latestQuotesByBuyer.get(q.BuyerID);
@@ -164,24 +168,38 @@
             });
             const latestQuoteIds = new Set([...latestQuotesByBuyer.values()].map(q => q.QuoteToBuyerID));
 
-            return `<table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">購買者</th><th class="p-2 text-left">我方業務出價</th><th class="p-2 text-left">購買者預期價格</th><th class="p-2 text-left">報價時間</th><th class="p-2 text-left">狀態</th><th class="p-2 text-left">操作</th></tr></thead><tbody class="divide-y divide-gray-200">${quotes.map(q => { 
-                const isLatestForThisBuyer = latestQuoteIds.has(q.QuoteToBuyerID);
-                const actionButtonHtml = isLatestForThisBuyer ? `<button data-action="show-pre-close-modal" class="bg-teal-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-teal-600">預定成交</button>` : '';
-                let orderInfo = '';
-                if(q.Status === 'Ordered') {
-                    const lineItem = db.Order_Line_Items.find(li => li.QuoteToBuyerID === q.QuoteToBuyerID);
-                    const order = findById('Orders', lineItem?.OrderID, 'OrderID');
-                    const finalPrice = q.QuotedPrice || q.CustomerExpectedPrice;
-                    const finalCost = findById('Supplier_Quotes', q.SupplierQuoteID, 'SupplierQuoteID')?.InternalCostPrice;
-                    orderInfo = `<div class="text-xs text-blue-600">訂單: ${order?.OrderNumber}<br>成交價: $${finalPrice}<br>成本價: $${finalCost}<br>時間: ${formatDateTime(order?.SystemCreatedAt)}</div>`;
-                }
-                return `<tr><td class="p-2">${findById('Buyers', q.BuyerID, 'BuyerID')?.BuyerName}</td><td class="p-2">$${q.QuotedPrice || '-'}</td><td class="p-2">$${q.CustomerExpectedPrice || '-'}</td><td class="p-2">${formatDateTime(q.QuoteTimestamp)}</td><td class="p-2">${getStatusBadge(q.Status)}</td><td class="p-2">${orderInfo || actionButtonHtml}</td></tr>`
-            }).join('')}</tbody></table>`;
-        };
-        // *** MODIFIED LOGIC END ***
+            return `<table class="min-w-full text-sm">
+                <thead class="bg-gray-100"><tr>
+                    <th class="p-2 text-left">購買者</th><th class="p-2 text-left">我方業務出價</th><th class="p-2 text-left">購買者預期價格</th><th class="p-2 text-left">報價時間</th><th class="p-2 text-left">狀態</th><th class="p-2 text-left">操作 / 成交資訊</th>
+                </tr></thead>
+                <tbody class="divide-y divide-gray-200">${quotes.map(q => {
+                    const isOrdered = orderedQuoteIds.has(q.QuoteToBuyerID);
+                    const isLatestForThisBuyer = latestQuoteIds.has(q.QuoteToBuyerID);
+                    let actionOrInfoHtml = '';
 
+                    if (isOrdered) {
+                        const lineItem = db.Order_Line_Items.find(li => li.QuoteToBuyerID === q.QuoteToBuyerID);
+                        const order = findById('Orders', lineItem?.OrderID, 'OrderID');
+                        const finalPrice = q.QuotedPrice || q.CustomerExpectedPrice;
+                        const finalCost = findById('Supplier_Quotes', q.SupplierQuoteID, 'SupplierQuoteID')?.InternalCostPrice;
+                        actionOrInfoHtml = `<div class="text-xs text-blue-600">訂單: ${order?.OrderNumber}<br>成交價: $${finalPrice}<br>成本價: $${finalCost}<br>訂單時間: ${formatDateTime(order?.SystemCreatedAt)}</div>`;
+                    } else if (isLatestForThisBuyer) {
+                        actionOrInfoHtml = `<button data-action="show-pre-close-modal" class="bg-teal-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-teal-600">預定成交</button>`;
+                    }
+
+                    return `<tr>
+                        <td class="p-2">${findById('Buyers', q.BuyerID, 'BuyerID')?.BuyerName}</td>
+                        <td class="p-2">$${q.QuotedPrice || '-'}</td>
+                        <td class="p-2">$${q.CustomerExpectedPrice || '-'}</td>
+                        <td class="p-2">${formatDateTime(q.QuoteTimestamp)}</td>
+                        <td class="p-2">${isOrdered ? '<span class="text-blue-600 font-semibold">已訂購</span>' : q.Status}</td>
+                        <td class="p-2">${actionOrInfoHtml}</td>
+                    </tr>`
+                }).join('')}</tbody>
+            </table>`;
+        };
+        
         const quotesForLatestPeriod = latestSupplierQuote ? db.Quotes_To_Buyers.filter(qtb => qtb.SupplierQuoteID === latestSupplierQuote.SupplierQuoteID) : [];
-        const historicalQuotes = allSupplierQuotes.slice(1);
 
         return `
             <div class="bg-white p-6 rounded-lg shadow-md">

@@ -12,10 +12,6 @@
     <style>
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        /* Modal 開啟時，禁止背景滾動 */
-        body.modal-open {
-            overflow: hidden;
-        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
@@ -41,7 +37,7 @@
             <div class="fade-in">
                 <div class="flex justify-between items-center mb-6">
                      <h2 class="text-3xl font-bold text-gray-900">供應商管理</h2>
-                     <button data-action="show-add-supplier-modal" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
+                     <button class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
                         <i class="fas fa-plus mr-2"></i>新增供應商
                      </button>
                 </div>
@@ -61,9 +57,7 @@
                             <tr>
                                 <th class="p-4 text-left font-semibold text-gray-600">供應商名稱</th>
                                 <th class="p-4 text-left font-semibold text-gray-600">主要聯絡人</th>
-                                <th class="p-4 text-left font-semibold text-gray-600">Mail</th>
                                 <th class="p-4 text-left font-semibold text-gray-600">聯絡電話</th>
-                                <th class="p-4 text-left font-semibold text-gray-600">付款條件</th>
                                 <th class="p-4 text-left font-semibold text-gray-600">備註</th>
                                 <th class="p-4 text-left font-semibold text-gray-600">操作</th>
                             </tr>
@@ -76,9 +70,6 @@
 
         </main>
     </div>
-    
-    <div id="modal-container" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 fade-in">
-        </div>
 
     <script>
     // --- 資料模型 (Data Model) ---
@@ -93,94 +84,4 @@
          Product_Packagings: [ { PackagingID: 1, CategoryID: 1, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 2, CategoryID: 1, PackagingName_ZH: "原塊", PackagingName_EN: "Whole Piece", IsActive: true }, { PackagingID: 3, CategoryID: 1, PackagingName_ZH: "禮盒裝", PackagingName_EN: "Gift Box", IsActive: true }, { PackagingID: 4, CategoryID: 2, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 5, CategoryID: 2, PackagingName_ZH: "原塊", PackagingName_EN: "Whole Piece", IsActive: true }, { PackagingID: 6, CategoryID: 3, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 7, CategoryID: 3, PackagingName_ZH: "禮盒裝", PackagingName_EN: "Gift Box", IsActive: true } ],
          Products: [ { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001" }, { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001" }, { ProductID: 3, SupplierID: 1, CategoryID: 2, PartID: 4, SpecID: 3, PackagingID: 4, ProductDisplayName: "台灣活菌豬五花", ProductCode: "TW-Pork-005" }, { ProductID: 4, SupplierID: 2, CategoryID: 3, PartID: 5, SpecID: 4, PackagingID: 7, ProductDisplayName: "波士頓龍蝦", ProductCode: "SEA-LOB-01" }, { ProductID: 5, SupplierID: 2, CategoryID: 3, PartID: 6, SpecID: 5, PackagingID: 6, ProductDisplayName: "北海道干貝", ProductCode: "SEA-SCA-03" }, { ProductID: 6, SupplierID: 2, CategoryID: 3, PartID: 7, SpecID: 6, PackagingID: 6, ProductDisplayName: "智利鮭魚", ProductCode: "SEA-SAL-02" } ], 
          Supplier_Quotes: [ { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 }, { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 }, { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 }, { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 800, InternalCostPrice: 850 }, { SupplierQuoteID: 5, ProductID: 2, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 810, InternalCostPrice: 860 }, { SupplierQuoteID: 6, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 }, { SupplierQuoteID: 7, ProductID: 3, EffectiveTimestamp: "2025-06-02T00:00:00Z", SupplierOriginalPrice: 400, InternalCostPrice: 430 }, { SupplierQuoteID: 8, ProductID: 3, EffectiveTimestamp: "2025-06-06T00:00:00Z", SupplierOriginalPrice: 410, InternalCostPrice: 440 }, { SupplierQuoteID: 9, ProductID: 3, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 405, InternalCostPrice: 435 }, { SupplierQuoteID: 10, ProductID: 4, EffectiveTimestamp: "2025-06-03T00:00:00Z", SupplierOriginalPrice: 1200, InternalCostPrice: 1250 }, { SupplierQuoteID: 11, ProductID: 4, EffectiveTimestamp: "2025-06-07T00:00:00Z", SupplierOriginalPrice: 1220, InternalCostPrice: 1270 }, { SupplierQuoteID: 12, ProductID: 4, EffectiveTimestamp: "2025-06-11T00:00:00Z", SupplierOriginalPrice: 1180, InternalCostPrice: 1230 }, { SupplierQuoteID: 13, ProductID: 5, EffectiveTimestamp: "2025-06-04T00:00:00Z", SupplierOriginalPrice: 900, InternalCostPrice: 940 }, { SupplierQuoteID: 14, ProductID: 5, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 910, InternalCostPrice: 950 }, { SupplierQuoteID: 15, ProductID: 5, EffectiveTimestamp: "2025-06-12T00:00:00Z", SupplierOriginalPrice: 890, InternalCostPrice: 930 }, { SupplierQuoteID: 16, ProductID: 6, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 700, InternalCostPrice: 740 }, { SupplierQuoteID: 17, ProductID: 6, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 710, InternalCostPrice: 750 }, { SupplierQuoteID: 18, ProductID: 6, EffectiveTimestamp: "2025-06-13T00:00:00Z", SupplierOriginalPrice: 690, InternalCostPrice: 730 } ],
-         Quotes_To_Buyers: [ { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", CreatedByUserID: 2 }, { QuoteToBuyerID: 4, SupplierQuoteID: 6, ProductID: 2, BuyerID: 101, QuotedPrice: 1000, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-09T14:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 5, SupplierQuoteID: 9, ProductID: 3, BuyerID: 101, QuotedPrice: 550, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-10T11:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 6, SupplierQuoteID: 12, ProductID: 4, BuyerID: 101, QuotedPrice: 1400, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T15:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 7, SupplierQuoteID: 15, ProductID: 5, BuyerID: 102, QuotedPrice: 1100, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:00:00Z", Status: "Accepted", CreatedByUserID: 2 }, { QuoteToBuyerID: 8, SupplierQuoteID: 18, ProductID: 6, BuyerID: 102, QuotedPrice: 850, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:05:00Z", Status: "Accepted", CreatedByUserID: 2 } ],
-         Orders: [ { OrderID: 1, OrderNumber: "ORD-202506-001", BuyerID: 102, SupplierID: 2, LoadingTimestamp: "2025-07-15T00:00:00Z", ArrivalTimestamp: "2025-08-20T00:00:00Z", PaymentMethod: "T/T 30 days", OrderStatus: "Confirmed", CreatedByUserID: 2, SystemCreatedAt: "2025-06-13T10:00:00Z" } ],
-         Order_Line_Items: [ { LineItemID: 1, OrderID: 1, QuoteToBuyerID: 7, ProductID: 5, Weight: 500.5 }, { LineItemID: 2, OrderID: 1, QuoteToBuyerID: 8, ProductID: 6, Weight: 800.0 } ]
-    };
-    
-    // --- 共用輔助函式 (Helper Functions) ---
-    const highlightCurrentNav = () => {
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        if (currentPage) {
-            const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
-            if (activeLink) {
-                activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
-            }
-        }
-    };
-
-    // --- Modal Functions ---
-    const modalContainer = document.getElementById('modal-container');
-    function showModal(title, content) {
-        modalContainer.innerHTML = `
-            <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl m-auto">
-                <div class="flex justify-between items-center p-5 border-b"><h3 class="text-xl font-bold">${title}</h3><button data-action="close-modal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button></div>
-                <div class="p-6">${content}</div>
-                <div class="flex justify-end p-4 bg-gray-50 border-t"><button data-action="close-modal" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2 hover:bg-gray-300">取消</button><button data-action="close-modal" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700">儲存 (展示)</button></div>
-            </div>`;
-        modalContainer.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-    function closeModal() {
-        if(modalContainer) { modalContainer.classList.add('hidden'); document.body.classList.remove('modal-open'); }
-    }
-    function getModalContent(type) {
-        const inputClass = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm";
-        const labelClass = "block text-sm font-medium text-gray-700";
-        if (type === 'add-supplier') {
-            return `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="${labelClass}">供應商名稱 *</label><input type="text" class="${inputClass}"></div>
-                <div><label class="${labelClass}">主要聯絡人姓名 *</label><input type="text" class="${inputClass}"></div>
-                <div><label class="${labelClass}">聯絡人Email *</label><input type="email" class="${inputClass}"></div>
-                <div><label class="${labelClass}">聯絡人電話 *</label><input type="tel" class="${inputClass}"></div>
-                <div><label class="${labelClass}">付款條件</label><input type="text" class="${inputClass}"></div>
-                <div><label class="${labelClass}">官方網站</label><input type="url" class="${inputClass}"></div>
-                <div class="md:col-span-2"><label class="${labelClass}">備註</label><textarea rows="3" class="${inputClass}"></textarea></div>
-            </div>`;
-        }
-        return '';
-    }
-    
-    // --- suppliers.html 頁面專屬的 JavaScript 邏輯 ---
-    function renderSupplierTable() {
-        const tableBody = document.getElementById('suppliers-table-body');
-        if (!tableBody) return;
-        tableBody.innerHTML = db.Suppliers.map(supplier => `
-            <tr class="hover:bg-gray-50">
-                <td class="p-4 font-semibold">${supplier.SupplierName}</td>
-                <td class="p-4">${supplier.ContactPersonName}</td>
-                <td class="p-4">${supplier.ContactPersonEmail}</td>
-                <td class="p-4">${supplier.ContactPersonPhone}</td>
-                <td class="p-4">${supplier.PaymentTerms}</td>
-                <td class="p-4 text-gray-600 truncate" title="${supplier.Remarks}" style="max-width: 200px;">${supplier.Remarks}</td>
-                <td class="p-4 whitespace-nowrap">
-                    <button class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">編輯</button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    function handlePageEvents() {
-        const pageContent = document.querySelector('main');
-        pageContent.addEventListener('click', (e) => {
-            const target = e.target.closest('[data-action]');
-            if (!target) return;
-            const { action } = target.dataset;
-            if (action === 'show-add-supplier-modal') {
-                showModal('新增供應商', getModalContent('add-supplier'));
-            }
-        });
-        modalContainer.addEventListener('click', (e) => {
-             if (e.target.id === 'modal-container' || e.target.closest('[data-action="close-modal"]')) { closeModal(); }
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        highlightCurrentNav();
-        renderSupplierTable();
-        handlePageEvents();
-    });
-    
-    </script>
-</body>
-</html>
+         Quotes_To_Buyers: [ { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", CreatedByUserID: 2 }, { QuoteToBuyerID: 4, SupplierQuoteID: 6, ProductID: 2, BuyerID: 101, QuotedPrice: 1000, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-09T14:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteTo
