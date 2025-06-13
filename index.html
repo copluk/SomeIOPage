@@ -37,10 +37,10 @@
     <div id="app" class="flex h-screen">
         
         <nav class="w-64 bg-white shadow-lg flex-shrink-0 flex flex-col">
-            <div class="p-4 border-b flex items-center gap-3">
+            <a href="./products.html" class="p-4 border-b flex items-center gap-3 hover:bg-gray-50 transition-colors">
                 <i class="fas fa-chart-line text-3xl text-indigo-600"></i>
                 <h1 class="text-xl font-bold text-gray-800">內部貿易系統</h1>
-            </div>
+            </a>
             <ul class="flex-grow">
                 <li>
                     <a href="./suppliers.html" data-page="suppliers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200">
@@ -88,125 +88,52 @@
 
     <script>
     // --- 資料模型 (Data Model) ---
-    // 所有頁面都將從這個 `db` 物件讀取資料
     const db = {
-        Users: [
-            { UserID: 1, Username: "sales_lin", FullName: "林業務", RoleID: 2 },
-            { UserID: 2, Username: "manager_chen", FullName: "陳經理", RoleID: 1 }
-        ],
-        Roles: [
-            { RoleID: 1, RoleName: "管理者" },
-            { RoleID: 2, RoleName: "業務" }
-        ],
-        Suppliers: [
-            { SupplierID: 1, SupplierName: "環球肉品公司" },
-            { SupplierID: 2, SupplierName: "頂級海鮮直送" }
-        ],
-        Buyers: [
-            { BuyerID: 101, BuyerName: "A級牛排館", AssignedSalespersonUserID: 1 },
-            { BuyerID: 102, BuyerName: "饗食天堂餐飲集團", AssignedSalespersonUserID: 2 }
-        ],
-        Product_Categories: [
-            { CategoryID: 1, PartName_ZH: "牛肉" },
-            { CategoryID: 2, PartName_ZH: "豬肉" },
-            { CategoryID: 3, PartName_ZH: "海鮮" }
-        ],
-        Products: [
-            { ProductID: 1, SupplierID: 1, CategoryID: 1, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001" },
-            { ProductID: 2, SupplierID: 1, CategoryID: 2, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001" },
-            { ProductID: 3, SupplierID: 1, CategoryID: 2, ProductDisplayName: "台灣活菌豬五花", ProductCode: "TW-Pork-005" },
-            { ProductID: 4, SupplierID: 2, CategoryID: 3, ProductDisplayName: "波士頓龍蝦", ProductCode: "SEA-LOB-01" },
-            { ProductID: 5, SupplierID: 2, CategoryID: 3, ProductDisplayName: "北海道干貝", ProductCode: "SEA-SCA-03" },
-            { ProductID: 6, SupplierID: 2, CategoryID: 3, ProductDisplayName: "智利鮭魚", ProductCode: "SEA-SAL-02" }
-        ],
-        Supplier_Quotes: [
-            { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 },
-            { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 },
-            { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 },
-            { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 800, InternalCostPrice: 850 },
-            { SupplierQuoteID: 5, ProductID: 2, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 810, InternalCostPrice: 860 },
-            { SupplierQuoteID: 6, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 },
-            { SupplierQuoteID: 7, ProductID: 3, EffectiveTimestamp: "2025-06-02T00:00:00Z", SupplierOriginalPrice: 400, InternalCostPrice: 430 },
-            { SupplierQuoteID: 8, ProductID: 3, EffectiveTimestamp: "2025-06-06T00:00:00Z", SupplierOriginalPrice: 410, InternalCostPrice: 440 },
-            { SupplierQuoteID: 9, ProductID: 3, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 405, InternalCostPrice: 435 },
-            { SupplierQuoteID: 10, ProductID: 4, EffectiveTimestamp: "2025-06-03T00:00:00Z", SupplierOriginalPrice: 1200, InternalCostPrice: 1250 },
-            { SupplierQuoteID: 11, ProductID: 4, EffectiveTimestamp: "2025-06-07T00:00:00Z", SupplierOriginalPrice: 1220, InternalCostPrice: 1270 },
-            { SupplierQuoteID: 12, ProductID: 4, EffectiveTimestamp: "2025-06-11T00:00:00Z", SupplierOriginalPrice: 1180, InternalCostPrice: 1230 },
-            { SupplierQuoteID: 13, ProductID: 5, EffectiveTimestamp: "2025-06-04T00:00:00Z", SupplierOriginalPrice: 900, InternalCostPrice: 940 },
-            { SupplierQuoteID: 14, ProductID: 5, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 910, InternalCostPrice: 950 },
-            { SupplierQuoteID: 15, ProductID: 5, EffectiveTimestamp: "2025-06-12T00:00:00Z", SupplierOriginalPrice: 890, InternalCostPrice: 930 },
-            { SupplierQuoteID: 16, ProductID: 6, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 700, InternalCostPrice: 740 },
-            { SupplierQuoteID: 17, ProductID: 6, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 710, InternalCostPrice: 750 },
-            { SupplierQuoteID: 18, ProductID: 6, EffectiveTimestamp: "2025-06-13T00:00:00Z", SupplierOriginalPrice: 690, InternalCostPrice: 730 }
-        ],
-        Quotes_To_Buyers: [
-            { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", CreatedByUserID: 1 },
-            { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", CreatedByUserID: 1 },
-            { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", CreatedByUserID: 2 },
-            { QuoteToBuyerID: 4, SupplierQuoteID: 6, ProductID: 2, BuyerID: 101, QuotedPrice: 1000, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-09T14:00:00Z", Status: "Accepted", CreatedByUserID: 1 },
-            { QuoteToBuyerID: 5, SupplierQuoteID: 9, ProductID: 3, BuyerID: 101, QuotedPrice: 550, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-10T11:00:00Z", Status: "Accepted", CreatedByUserID: 1 },
-            { QuoteToBuyerID: 6, SupplierQuoteID: 12, ProductID: 4, BuyerID: 101, QuotedPrice: 1400, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T15:00:00Z", Status: "Accepted", CreatedByUserID: 1 },
-            { QuoteToBuyerID: 7, SupplierQuoteID: 15, ProductID: 5, BuyerID: 102, QuotedPrice: 1100, CustomerExpectedPrice: 1100, QuoteTimestamp: "2025-06-13T09:00:00Z", Status: "Ordered", CreatedByUserID: 2 },
-            { QuoteToBuyerID: 8, SupplierQuoteID: 18, ProductID: 6, BuyerID: 102, QuotedPrice: 850, CustomerExpectedPrice: 850, QuoteTimestamp: "2025-06-13T09:05:00Z", Status: "Ordered", CreatedByUserID: 2 }
-        ],
-        Orders: [
-            { OrderID: 1, OrderNumber: "ORD-202506-001", BuyerID: 102, SupplierID: 2, LoadingTimestamp: "2025-07-15T00:00:00Z", ArrivalTimestamp: "2025-08-20T00:00:00Z", PaymentMethod: "T/T 30 days", OrderStatus: "Confirmed", CreatedByUserID: 2, SystemCreatedAt: "2025-06-13T10:00:00Z" }
-        ],
-        Order_Line_Items: [
-            { LineItemID: 1, OrderID: 1, QuoteToBuyerID: 7, ProductID: 5, Weight: 500.5 },
-            { LineItemID: 2, OrderID: 1, QuoteToBuyerID: 8, ProductID: 6, Weight: 800.0 }
-        ]
+        Users: [ { UserID: 1, Username: "sales_lin", FullName: "林業務", Email: "lin@example.com", AccountStatus: "Active", RoleID: 2 }, { UserID: 2, Username: "manager_chen", FullName: "陳經理", Email: "chen@example.com", AccountStatus: "Active", RoleID: 1 } ],
+        Roles: [ { RoleID: 1, RoleName: "管理者" }, { RoleID: 2, RoleName: "業務" } ],
+        Suppliers: [ { SupplierID: 1, SupplierName: "環球肉品公司", ContactPersonName: "王經理", ContactPersonEmail: "wang@worldmeat.com", ContactPersonPhone: "02-2788-1234", PaymentTerms: "月結30天", WebsiteURL: "https://www.worldmeat.com", Remarks: "每週一、四固定出貨。" }, { SupplierID: 2, SupplierName: "頂級海鮮直送", ContactPersonName: "李小姐", ContactPersonEmail: "lee@topseafood.com", ContactPersonPhone: "07-555-8888", PaymentTerms: "貨到付款", WebsiteURL: "https://www.topseafood.com", Remarks: "需提前三天預訂特殊品項。" } ],
+        Buyers: [ { BuyerID: 101, BuyerName: "A級牛排館", AssignedSalespersonUserID: 1, ContactPersonName: "陳主廚", ContactPersonEmail: "chen.chef@asteak.com", ContactPersonPhone: "0912-345-678", PaymentTerms: "月結60天", WebsiteURL: null, Remarks: "偏好油花較少的部位。" }, { BuyerID: 102, BuyerName: "饗食天堂餐飲集團", AssignedSalespersonUserID: 2, ContactPersonName: "採購部林先生", ContactPersonEmail: "procurement.lin@eat-together.com", ContactPersonPhone: "02-8780-8000", PaymentTerms: "月結45天", WebsiteURL: "https://www.eat-together.com", Remarks: "集團統一採購，需附檢驗報告。" } ],
+        Product_Categories: [ { CategoryID: 1, PartName_ZH: "牛肉" }, { CategoryID: 2, PartName_ZH: "豬肉" }, { CategoryID: 3, PartName_ZH: "海鮮" } ],
+        Product_Parts: [ { PartID: 1, CategoryID: 1, PartName_ZH: "肋眼" }, { PartID: 2, CategoryID: 1, PartName_ZH: "菲力" }, { PartID: 3, CategoryID: 2, PartName_ZH: "梅花" }, { PartID: 4, CategoryID: 2, PartName_ZH: "五花" }, { PartID: 5, CategoryID: 3, PartName_ZH: "龍蝦" }, { PartID: 6, CategoryID: 3, PartName_ZH: "干貝" }, { PartID: 7, CategoryID: 3, PartName_ZH: "鮭魚" } ],
+        Product_Specs: [ { SpecID: 1, CategoryID: 1, SpecName_ZH: "M9" }, { SpecID: 2, CategoryID: 2, SpecName_ZH: "Bellota" }, { SpecID: 3, CategoryID: 2, SpecName_ZH: "活菌飼養" }, { SpecID: 4, CategoryID: 3, SpecName_ZH: "野生" }, { SpecID: 5, CategoryID: 3, SpecName_ZH: "生食級" }, { SpecID: 6, CategoryID: 3, SpecName_ZH: "輪切" } ],
+        Product_Packagings: [ { PackagingID: 1, CategoryID: 1, PackagingName_ZH: "真空包裝" }, { PackagingID: 2, CategoryID: 1, PackagingName_ZH: "原塊" }, { PackagingID: 3, CategoryID: 1, PackagingName_ZH: "禮盒裝" }, { PackagingID: 4, CategoryID: 2, PackagingName_ZH: "真空包裝" }, { PackagingID: 5, CategoryID: 2, PackagingName_ZH: "原塊" }, { PackagingID: 6, CategoryID: 3, PackagingName_ZH: "真空包裝" }, { PackagingID: 7, CategoryID: 3, PackagingName_ZH: "禮盒裝" } ],
+        Products: [ { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001" }, { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001" }, { ProductID: 3, SupplierID: 1, CategoryID: 2, PartID: 4, SpecID: 3, PackagingID: 4, ProductDisplayName: "台灣活菌豬五花", ProductCode: "TW-Pork-005" }, { ProductID: 4, SupplierID: 2, CategoryID: 3, PartID: 5, SpecID: 4, PackagingID: 7, ProductDisplayName: "波士頓龍蝦", ProductCode: "SEA-LOB-01" }, { ProductID: 5, SupplierID: 2, CategoryID: 3, PartID: 6, SpecID: 5, PackagingID: 6, ProductDisplayName: "北海道干貝", ProductCode: "SEA-SCA-03" }, { ProductID: 6, SupplierID: 2, CategoryID: 3, PartID: 7, SpecID: 6, PackagingID: 6, ProductDisplayName: "智利鮭魚", ProductCode: "SEA-SAL-02" } ],
+        Supplier_Quotes: [ { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 }, { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 }, { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 }, { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 800, InternalCostPrice: 850 }, { SupplierQuoteID: 5, ProductID: 2, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 810, InternalCostPrice: 860 }, { SupplierQuoteID: 6, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 }, { SupplierQuoteID: 7, ProductID: 3, EffectiveTimestamp: "2025-06-02T00:00:00Z", SupplierOriginalPrice: 400, InternalCostPrice: 430 }, { SupplierQuoteID: 8, ProductID: 3, EffectiveTimestamp: "2025-06-06T00:00:00Z", SupplierOriginalPrice: 410, InternalCostPrice: 440 }, { SupplierQuoteID: 9, ProductID: 3, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 405, InternalCostPrice: 435 }, { SupplierQuoteID: 10, ProductID: 4, EffectiveTimestamp: "2025-06-03T00:00:00Z", SupplierOriginalPrice: 1200, InternalCostPrice: 1250 }, { SupplierQuoteID: 11, ProductID: 4, EffectiveTimestamp: "2025-06-07T00:00:00Z", SupplierOriginalPrice: 1220, InternalCostPrice: 1270 }, { SupplierQuoteID: 12, ProductID: 4, EffectiveTimestamp: "2025-06-11T00:00:00Z", SupplierOriginalPrice: 1180, InternalCostPrice: 1230 }, { SupplierQuoteID: 13, ProductID: 5, EffectiveTimestamp: "2025-06-04T00:00:00Z", SupplierOriginalPrice: 900, InternalCostPrice: 940 }, { SupplierQuoteID: 14, ProductID: 5, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 910, InternalCostPrice: 950 }, { SupplierQuoteID: 15, ProductID: 5, EffectiveTimestamp: "2025-06-12T00:00:00Z", SupplierOriginalPrice: 890, InternalCostPrice: 930 }, { SupplierQuoteID: 16, ProductID: 6, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 700, InternalCostPrice: 740 }, { SupplierQuoteID: 17, ProductID: 6, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 710, InternalCostPrice: 750 }, { SupplierQuoteID: 18, ProductID: 6, EffectiveTimestamp: "2025-06-13T00:00:00Z", SupplierOriginalPrice: 690, InternalCostPrice: 730 } ],
+        Quotes_To_Buyers: [ { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", CreatedByUserID: 2 }, { QuoteToBuyerID: 4, SupplierQuoteID: 6, ProductID: 2, BuyerID: 101, QuotedPrice: 1000, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-09T14:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 5, SupplierQuoteID: 9, ProductID: 3, BuyerID: 101, QuotedPrice: 550, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-10T11:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 6, SupplierQuoteID: 12, ProductID: 4, BuyerID: 101, QuotedPrice: 1400, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T15:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 7, SupplierQuoteID: 15, ProductID: 5, BuyerID: 102, QuotedPrice: 1100, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:00:00Z", Status: "Accepted", CreatedByUserID: 2 }, { QuoteToBuyerID: 8, SupplierQuoteID: 18, ProductID: 6, BuyerID: 102, QuotedPrice: 850, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:05:00Z", Status: "Accepted", CreatedByUserID: 2 } ],
+        Orders: [ { OrderID: 1, OrderNumber: "ORD-202506-001", BuyerID: 102, SupplierID: 2, LoadingTimestamp: "2025-07-15T00:00:00Z", ArrivalTimestamp: "2025-08-20T00:00:00Z", PaymentMethod: "T/T 30 days", OrderStatus: "Confirmed", CreatedByUserID: 2, SystemCreatedAt: "2025-06-13T10:00:00Z" } ],
+        Order_Line_Items: [ { LineItemID: 1, OrderID: 1, QuoteToBuyerID: 7, ProductID: 5, Weight: 500.5 }, { LineItemID: 2, OrderID: 1, QuoteToBuyerID: 8, ProductID: 6, Weight: 800.0 } ]
     };
     
     // --- 共用輔助函式 (Helper Functions) ---
-
-    /**
-     * 格式化 ISO 日期字串為台灣本地時間格式
-     * @param {string} iso - ISO 8601 日期時間字串
-     * @returns {string} 格式化後的日期時間字串
-     */
     const formatDateTime = (iso) => iso ? new Date(iso).toLocaleString('zh-TW', { timeZone: "Asia/Taipei", year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/,/g, '') : 'N/A';
-
-    /**
-     * 根據 ID 從指定的資料集合中查找項目
-     * @param {string} collectionName - db 物件中的鍵名 (e.g., 'Users')
-     * @param {number} id - 要查找的 ID
-     * @param {string} keyName - ID 欄位的名稱 (e.g., 'UserID')
-     * @returns {object|undefined} 找到的項目或 undefined
-     */
     const findById = (collectionName, id, keyName) => db[collectionName].find(item => item[keyName] === id);
-    
-    /**
-     * 產生對應狀態的 HTML 徽章
-     * @param {string} status - 狀態字串
-     * @returns {string} HTML string of a badge
-     */
     const getStatusBadge = (status) => {
-        const styles = {
-            Negotiating: 'bg-yellow-100 text-yellow-800',
-            Accepted: 'bg-green-100 text-green-800',
-            Rejected: 'bg-red-100 text-red-800',
-            Ordered: 'bg-blue-100 text-blue-800',
-            Confirmed: 'bg-sky-100 text-sky-800'
-        };
+        const styles = { Negotiating: 'bg-yellow-100 text-yellow-800', Accepted: 'bg-green-100 text-green-800', Rejected: 'bg-red-100 text-red-800', Ordered: 'bg-blue-100 text-blue-800', Confirmed: 'bg-sky-100 text-sky-800' };
         return `<span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${styles[status] || 'bg-gray-100 text-gray-800'}">${status}</span>`;
     };
 
     /**
-     * 讓目前頁面的導航連結高亮
+     * 讓目前頁面的導航連結高亮，若無特定頁面則預設為產品管理
      */
-    document.addEventListener('DOMContentLoaded', () => {
-        // 從 URL 取得當前頁面名稱, 例如 "buyers.html" -> "buyers"
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        if (currentPage) {
-            const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
-            if (activeLink) {
-                activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
-            }
+    // *** MODIFIED FUNCTION ***
+    const highlightCurrentNav = () => {
+        let currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+        
+        // 如果 URL 指向根目錄或 index，則預設為 'products'
+        if (!currentPage || currentPage === 'index') {
+            currentPage = 'products';
         }
-    });
+
+        const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
+        }
+    };
 
     // --- 頁面專屬的 JavaScript 邏輯將會寫在這裡 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        highlightCurrentNav();
+    });
     
     </script>
 </body>

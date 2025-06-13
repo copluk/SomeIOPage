@@ -13,22 +13,9 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .slide-in-left { animation: slideInLeft 0.4s ease-in-out; }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-
-        /* <details> 標籤的箭頭樣式 */
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
-        details > summary::before {
-            content: '\f0da'; /* Font Awesome right arrow */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            margin-right: 0.5rem;
-            transition: transform 0.2s ease-in-out;
-            display: inline-block;
-        }
-        details[open] > summary::before {
-            transform: rotate(90deg);
+        /* Modal 開啟時，禁止背景滾動 */
+        body.modal-open {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -37,10 +24,10 @@
     <div id="app" class="flex h-screen">
         
         <nav class="w-64 bg-white shadow-lg flex-shrink-0 flex flex-col">
-            <div class="p-4 border-b flex items-center gap-3">
+            <a href="./products.html" class="p-4 border-b flex items-center gap-3 hover:bg-gray-50 transition-colors">
                 <i class="fas fa-chart-line text-3xl text-indigo-600"></i>
                 <h1 class="text-xl font-bold text-gray-800">內部貿易系統</h1>
-            </div>
+            </a>
             <ul class="flex-grow">
                 <li><a href="./suppliers.html" data-page="suppliers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-truck w-5 text-center"></i><span>供應商管理</span></a></li>
                 <li><a href="./buyers.html" data-page="buyers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-users w-5 text-center"></i><span>購買者管理</span></a></li>
@@ -55,7 +42,7 @@
             <div class="fade-in">
                 <div class="flex justify-between items-center mb-6">
                      <h2 class="text-3xl font-bold text-gray-900">產品管理</h2>
-                     <button class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
+                     <button data-action="show-add-product-modal" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 shadow-sm">
                         <i class="fas fa-plus mr-2"></i>新增產品
                      </button>
                 </div>
@@ -91,34 +78,21 @@
         </main>
     </div>
 
+    <div id="modal-container" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 fade-in">
+        </div>
+
     <script>
-    // --- 資料模型 (Data Model) - UPDATED ---
+    // --- 資料模型 (Data Model) ---
     const db = {
-         Users: [
-           { UserID: 1, Username: "sales_lin", PasswordHash: "hashed_password_1", FullName: "林業務", Email: "lin@example.com", AccountStatus: "Active", RoleID: 2, SystemCreatedAt: "2024-01-10T09:00:00Z", SystemUpdatedAt: "2025-06-12T14:30:00Z" },
-           { UserID: 2, Username: "manager_chen", PasswordHash: "hashed_password_2", FullName: "陳經理", Email: "chen@example.com", AccountStatus: "Active", RoleID: 1, SystemCreatedAt: "2024-01-10T09:00:00Z", SystemUpdatedAt: "2025-06-12T14:30:00Z" }
-         ],
+         Users: [ { UserID: 1, Username: "sales_lin", PasswordHash: "hashed_password_1", FullName: "林業務", Email: "lin@example.com", AccountStatus: "Active", RoleID: 2, SystemCreatedAt: "2024-01-10T09:00:00Z", SystemUpdatedAt: "2025-06-12T14:30:00Z" }, { UserID: 2, Username: "manager_chen", PasswordHash: "hashed_password_2", FullName: "陳經理", Email: "chen@example.com", AccountStatus: "Active", RoleID: 1, SystemCreatedAt: "2024-01-10T09:00:00Z", SystemUpdatedAt: "2025-06-12T14:30:00Z" } ],
          Roles: [ { RoleID: 1, RoleName: "管理者" }, { RoleID: 2, RoleName: "業務" } ],
-         Suppliers: [
-           { SupplierID: 1, SupplierName: "環球肉品公司", ContactPersonName: "王經理", ContactPersonEmail: "wang@worldmeat.com", ContactPersonPhone: "02-2788-1234", PaymentTerms: "月結30天", WebsiteURL: "https://www.worldmeat.com", Remarks: "每週一、四固定出貨。" },
-           { SupplierID: 2, SupplierName: "頂級海鮮直送", ContactPersonName: "李小姐", ContactPersonEmail: "lee@topseafood.com", ContactPersonPhone: "07-555-8888", PaymentTerms: "貨到付款", WebsiteURL: "https://www.topseafood.com", Remarks: "需提前三天預訂特殊品項。" }
-         ],
-         Buyers: [
-           { BuyerID: 101, BuyerName: "A級牛排館", AssignedSalespersonUserID: 1, ContactPersonName: "陳主廚", ContactPersonEmail: "chen.chef@asteak.com", ContactPersonPhone: "0912-345-678", PaymentTerms: "月結60天", WebsiteURL: null, Remarks: "偏好油花較少的部位。" },
-           { BuyerID: 102, BuyerName: "饗食天堂餐飲集團", AssignedSalespersonUserID: 2, ContactPersonName: "採購部林先生", ContactPersonEmail: "procurement.lin@eat-together.com", ContactPersonPhone: "02-8780-8000", PaymentTerms: "月結45天", WebsiteURL: "https://www.eat-together.com", Remarks: "集團統一採購，需附檢驗報告。" }
-         ],
+         Suppliers: [ { SupplierID: 1, SupplierName: "環球肉品公司", ContactPersonName: "王經理", ContactPersonEmail: "wang@worldmeat.com", ContactPersonPhone: "02-2788-1234", PaymentTerms: "月結30天", WebsiteURL: "https://www.worldmeat.com", Remarks: "每週一、四固定出貨。" }, { SupplierID: 2, SupplierName: "頂級海鮮直送", ContactPersonName: "李小姐", ContactPersonEmail: "lee@topseafood.com", ContactPersonPhone: "07-555-8888", PaymentTerms: "貨到付款", WebsiteURL: "https://www.topseafood.com", Remarks: "需提前三天預訂特殊品項。" } ],
+         Buyers: [ { BuyerID: 101, BuyerName: "A級牛排館", AssignedSalespersonUserID: 1, ContactPersonName: "陳主廚", ContactPersonEmail: "chen.chef@asteak.com", ContactPersonPhone: "0912-345-678", PaymentTerms: "月結60天", WebsiteURL: null, Remarks: "偏好油花較少的部位。" }, { BuyerID: 102, BuyerName: "饗食天堂餐飲集團", AssignedSalespersonUserID: 2, ContactPersonName: "採購部林先生", ContactPersonEmail: "procurement.lin@eat-together.com", ContactPersonPhone: "02-8780-8000", PaymentTerms: "月結45天", WebsiteURL: "https://www.eat-together.com", Remarks: "集團統一採購，需附檢驗報告。" } ],
          Product_Categories: [ { CategoryID: 1, PartName_ZH: "牛肉", PartName_EN: "Beef", IsActive: true }, { CategoryID: 2, PartName_ZH: "豬肉", PartName_EN: "Pork", IsActive: true }, { CategoryID: 3, PartName_ZH: "海鮮", PartName_EN: "Seafood", IsActive: true } ],
          Product_Parts: [ { PartID: 1, CategoryID: 1, PartName_ZH: "肋眼", PartName_EN: "Ribeye", IsActive: true }, { PartID: 2, CategoryID: 1, PartName_ZH: "菲力", PartName_EN: "Tenderloin", IsActive: true }, { PartID: 3, CategoryID: 2, PartName_ZH: "梅花", PartName_EN: "Pork Collar", IsActive: true }, { PartID: 4, CategoryID: 2, PartName_ZH: "五花", PartName_EN: "Pork Belly", IsActive: true }, { PartID: 5, CategoryID: 3, PartName_ZH: "龍蝦", PartName_EN: "Lobster", IsActive: true }, { PartID: 6, CategoryID: 3, PartName_ZH: "干貝", PartName_EN: "Scallop", IsActive: true }, { PartID: 7, CategoryID: 3, PartName_ZH: "鮭魚", PartName_EN: "Salmon", IsActive: true } ],
          Product_Specs: [ { SpecID: 1, CategoryID: 1, SpecName_ZH: "M9", SpecName_EN: "M9 Grade", IsActive: true }, { SpecID: 2, CategoryID: 2, SpecName_ZH: "Bellota", SpecName_EN: "Bellota Grade", IsActive: true }, { SpecID: 3, CategoryID: 2, SpecName_ZH: "活菌飼養", SpecName_EN: "Probiotic-fed", IsActive: true }, { SpecID: 4, CategoryID: 3, SpecName_ZH: "野生", SpecName_EN: "Wild Caught", IsActive: true }, { SpecID: 5, CategoryID: 3, SpecName_ZH: "生食級", SpecName_EN: "Sashimi Grade", IsActive: true }, { SpecID: 6, CategoryID: 3, SpecName_ZH: "輪切", SpecName_EN: "Wheel Cut", IsActive: true } ],
          Product_Packagings: [ { PackagingID: 1, CategoryID: 1, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 2, CategoryID: 1, PackagingName_ZH: "原塊", PackagingName_EN: "Whole Piece", IsActive: true }, { PackagingID: 3, CategoryID: 1, PackagingName_ZH: "禮盒裝", PackagingName_EN: "Gift Box", IsActive: true }, { PackagingID: 4, CategoryID: 2, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 5, CategoryID: 2, PackagingName_ZH: "原塊", PackagingName_EN: "Whole Piece", IsActive: true }, { PackagingID: 6, CategoryID: 3, PackagingName_ZH: "真空包裝", PackagingName_EN: "Vacuum Packed", IsActive: true }, { PackagingID: 7, CategoryID: 3, PackagingName_ZH: "禮盒裝", PackagingName_EN: "Gift Box", IsActive: true } ],
-         Products: [
-          { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001" },
-           { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001" },
-           { ProductID: 3, SupplierID: 1, CategoryID: 2, PartID: 4, SpecID: 3, PackagingID: 4, ProductDisplayName: "台灣活菌豬五花", ProductCode: "TW-Pork-005" },
-           { ProductID: 4, SupplierID: 2, CategoryID: 3, PartID: 5, SpecID: 4, PackagingID: 7, ProductDisplayName: "波士頓龍蝦", ProductCode: "SEA-LOB-01" },
-           { ProductID: 5, SupplierID: 2, CategoryID: 3, PartID: 6, SpecID: 5, PackagingID: 6, ProductDisplayName: "北海道干貝", ProductCode: "SEA-SCA-03" },
-           { ProductID: 6, SupplierID: 2, CategoryID: 3, PartID: 7, SpecID: 6, PackagingID: 6, ProductDisplayName: "智利鮭魚", ProductCode: "SEA-SAL-02" }
-         ], 
+         Products: [ { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001" }, { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001" }, { ProductID: 3, SupplierID: 1, CategoryID: 2, PartID: 4, SpecID: 3, PackagingID: 4, ProductDisplayName: "台灣活菌豬五花", ProductCode: "TW-Pork-005" }, { ProductID: 4, SupplierID: 2, CategoryID: 3, PartID: 5, SpecID: 4, PackagingID: 7, ProductDisplayName: "波士頓龍蝦", ProductCode: "SEA-LOB-01" }, { ProductID: 5, SupplierID: 2, CategoryID: 3, PartID: 6, SpecID: 5, PackagingID: 6, ProductDisplayName: "北海道干貝", ProductCode: "SEA-SCA-03" }, { ProductID: 6, SupplierID: 2, CategoryID: 3, PartID: 7, SpecID: 6, PackagingID: 6, ProductDisplayName: "智利鮭魚", ProductCode: "SEA-SAL-02" } ], 
          Supplier_Quotes: [ { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 }, { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 }, { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 }, { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 800, InternalCostPrice: 850 }, { SupplierQuoteID: 5, ProductID: 2, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 810, InternalCostPrice: 860 }, { SupplierQuoteID: 6, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 }, { SupplierQuoteID: 7, ProductID: 3, EffectiveTimestamp: "2025-06-02T00:00:00Z", SupplierOriginalPrice: 400, InternalCostPrice: 430 }, { SupplierQuoteID: 8, ProductID: 3, EffectiveTimestamp: "2025-06-06T00:00:00Z", SupplierOriginalPrice: 410, InternalCostPrice: 440 }, { SupplierQuoteID: 9, ProductID: 3, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 405, InternalCostPrice: 435 }, { SupplierQuoteID: 10, ProductID: 4, EffectiveTimestamp: "2025-06-03T00:00:00Z", SupplierOriginalPrice: 1200, InternalCostPrice: 1250 }, { SupplierQuoteID: 11, ProductID: 4, EffectiveTimestamp: "2025-06-07T00:00:00Z", SupplierOriginalPrice: 1220, InternalCostPrice: 1270 }, { SupplierQuoteID: 12, ProductID: 4, EffectiveTimestamp: "2025-06-11T00:00:00Z", SupplierOriginalPrice: 1180, InternalCostPrice: 1230 }, { SupplierQuoteID: 13, ProductID: 5, EffectiveTimestamp: "2025-06-04T00:00:00Z", SupplierOriginalPrice: 900, InternalCostPrice: 940 }, { SupplierQuoteID: 14, ProductID: 5, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 910, InternalCostPrice: 950 }, { SupplierQuoteID: 15, ProductID: 5, EffectiveTimestamp: "2025-06-12T00:00:00Z", SupplierOriginalPrice: 890, InternalCostPrice: 930 }, { SupplierQuoteID: 16, ProductID: 6, EffectiveTimestamp: "2025-06-05T00:00:00Z", SupplierOriginalPrice: 700, InternalCostPrice: 740 }, { SupplierQuoteID: 17, ProductID: 6, EffectiveTimestamp: "2025-06-09T00:00:00Z", SupplierOriginalPrice: 710, InternalCostPrice: 750 }, { SupplierQuoteID: 18, ProductID: 6, EffectiveTimestamp: "2025-06-13T00:00:00Z", SupplierOriginalPrice: 690, InternalCostPrice: 730 } ],
          Quotes_To_Buyers: [ { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", CreatedByUserID: 1 }, { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", CreatedByUserID: 2 }, { QuoteToBuyerID: 4, SupplierQuoteID: 6, ProductID: 2, BuyerID: 101, QuotedPrice: 1000, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-09T14:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 5, SupplierQuoteID: 9, ProductID: 3, BuyerID: 101, QuotedPrice: 550, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-10T11:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 6, SupplierQuoteID: 12, ProductID: 4, BuyerID: 101, QuotedPrice: 1400, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-12T15:00:00Z", Status: "Accepted", CreatedByUserID: 1 }, { QuoteToBuyerID: 7, SupplierQuoteID: 15, ProductID: 5, BuyerID: 102, QuotedPrice: 1100, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:00:00Z", Status: "Accepted", CreatedByUserID: 2 }, { QuoteToBuyerID: 8, SupplierQuoteID: 18, ProductID: 6, BuyerID: 102, QuotedPrice: 850, CustomerExpectedPrice: null, QuoteTimestamp: "2025-06-13T09:05:00Z", Status: "Accepted", CreatedByUserID: 2 } ],
          Orders: [ { OrderID: 1, OrderNumber: "ORD-202506-001", BuyerID: 102, SupplierID: 2, LoadingTimestamp: "2025-07-15T00:00:00Z", ArrivalTimestamp: "2025-08-20T00:00:00Z", PaymentMethod: "T/T 30 days", OrderStatus: "Confirmed", CreatedByUserID: 2, SystemCreatedAt: "2025-06-13T10:00:00Z" } ],
@@ -126,60 +100,81 @@
     };
     
     // --- 共用輔助函式 (Helper Functions) ---
-    const formatDateTime = (iso) => iso ? new Date(iso).toLocaleString('zh-TW', { timeZone: "Asia/Taipei", year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/,/g, '') : 'N/A';
     const findById = (collectionName, id, keyName) => db[collectionName].find(item => item[keyName] === id);
-    const getStatusBadge = (status) => {
-        const styles = { Negotiating: 'bg-yellow-100 text-yellow-800', Accepted: 'bg-green-100 text-green-800', Rejected: 'bg-red-100 text-red-800', Ordered: 'bg-blue-100 text-blue-800', Confirmed: 'bg-sky-100 text-sky-800' };
-        return `<span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${styles[status] || 'bg-gray-100 text-gray-800'}">${status}</span>`;
-    };
     const highlightCurrentNav = () => {
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        if (currentPage) {
-            const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
-            if (activeLink) {
-                activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
-            }
+        let currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+        if (!currentPage || currentPage === 'index') { currentPage = 'products'; }
+        const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
         }
     };
 
+    // --- Modal Functions ---
+    const modalContainer = document.getElementById('modal-container');
+    function showModal(title, content) {
+        modalContainer.innerHTML = `<div class="bg-white rounded-lg shadow-xl w-full max-w-2xl m-auto"><div class="flex justify-between items-center p-5 border-b"><h3 class="text-xl font-bold">${title}</h3><button data-action="close-modal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button></div><div class="p-6">${content}</div><div class="flex justify-end p-4 bg-gray-50 border-t"><button data-action="close-modal" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2 hover:bg-gray-300">取消</button><button data-action="close-modal" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700">儲存 (展示)</button></div></div>`;
+        modalContainer.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
+    function closeModal() {
+        if(modalContainer) { modalContainer.classList.add('hidden'); document.body.classList.remove('modal-open'); }
+    }
+    function getModalContent(type) {
+        const inputClass = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm";
+        const labelClass = "block text-sm font-medium text-gray-700";
+        if (type === 'add-product') {
+            const supplierOptions = db.Suppliers.map(s => `<option value="${s.SupplierID}">${s.SupplierName}</option>`).join('');
+            const categoryOptions = db.Product_Categories.map(c => `<option value="${c.CategoryID}">${c.PartName_ZH}</option>`).join('');
+            const partOptions = db.Product_Parts.map(p => `<option value="${p.PartID}">${p.PartName_ZH}</option>`).join('');
+            const specOptions = db.Product_Specs.map(s => `<option value="${s.SpecID}">${s.SpecName_ZH}</option>`).join('');
+            const packagingOptions = db.Product_Packagings.map(p => `<option value="${p.PackagingID}">${p.PackagingName_ZH}</option>`).join('');
+
+            return `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label class="${labelClass}">產品代碼 *</label><input type="text" class="${inputClass}"></div>
+                <div><label class="${labelClass}">顯示名稱 *</label><input type="text" class="${inputClass}"></div>
+                <div><label class="${labelClass}">供應商 *</label><select class="${inputClass}">${supplierOptions}</select></div>
+                <div><label class="${labelClass}">種類 *</label><select class="${inputClass}">${categoryOptions}</select></div>
+                <div><label class="${labelClass}">部位 *</label><select class="${inputClass}">${partOptions}</select></div>
+                <div><label class="${labelClass}">規格 *</label><select class="${inputClass}">${specOptions}</select></div>
+                <div class="md:col-span-2"><label class="${labelClass}">包裝 *</label><select class="${inputClass}">${packagingOptions}</select></div>
+            </div>`;
+        }
+        return '';
+    }
+
     // --- products.html 頁面專屬的 JavaScript 邏輯 ---
-    
-    /**
-     * 渲染產品列表到表格中
-     */
     function renderProductTable() {
         const tableBody = document.getElementById('products-table-body');
         if (!tableBody) return;
-
         tableBody.innerHTML = db.Products.map(product => {
             const supplier = findById('Suppliers', product.SupplierID, 'SupplierID');
             const category = findById('Product_Categories', product.CategoryID, 'CategoryID');
             const part = findById('Product_Parts', product.PartID, 'PartID');
             const spec = findById('Product_Specs', product.SpecID, 'SpecID');
             const packaging = findById('Product_Packagings', product.PackagingID, 'PackagingID');
-            
-            return `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-4 text-gray-700 font-mono">${product.ProductCode}</td>
-                    <td class="p-4 font-semibold">${product.ProductDisplayName}</td>
-                    <td class="p-4">${supplier?.SupplierName || 'N/A'}</td>
-                    <td class="p-4">${category?.PartName_ZH || 'N/A'}</td>
-                    <td class="p-4">${part?.PartName_ZH || 'N/A'}</td>
-                    <td class="p-4">${spec?.SpecName_ZH || 'N/A'}</td>
-                    <td class="p-4">${packaging?.PackagingName_ZH || 'N/A'}</td>
-                    <td class="p-4 space-x-4 whitespace-nowrap">
-                        <button class="text-gray-500 hover:text-gray-800 font-semibold text-sm">編輯</button>
-                        <a href="./product-detail.html?id=${product.ProductID}" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">查看詳情</a>
-                    </td>
-                </tr>
-            `;
+            return `<tr class="hover:bg-gray-50"><td class="p-4 text-gray-700 font-mono">${product.ProductCode}</td><td class="p-4 font-semibold">${product.ProductDisplayName}</td><td class="p-4">${supplier?.SupplierName || 'N/A'}</td><td class="p-4">${category?.PartName_ZH || 'N/A'}</td><td class="p-4">${part?.PartName_ZH || 'N/A'}</td><td class="p-4">${spec?.SpecName_ZH || 'N/A'}</td><td class="p-4">${packaging?.PackagingName_ZH || 'N/A'}</td><td class="p-4 space-x-4 whitespace-nowrap"><button class="text-gray-500 hover:text-gray-800 font-semibold text-sm">編輯</button><a href="./product-detail.html?id=${product.ProductID}" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">查看詳情</a></td></tr>`;
         }).join('');
     }
 
-    // 當頁面載入完成後執行
+    function handlePageEvents() {
+        const pageContent = document.querySelector('main');
+        pageContent.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+            if (target.dataset.action === 'show-add-product-modal') {
+                showModal('新增產品', getModalContent('add-product'));
+            }
+        });
+        modalContainer.addEventListener('click', (e) => {
+             if (e.target.id === 'modal-container' || e.target.closest('[data-action="close-modal"]')) { closeModal(); }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         highlightCurrentNav();
         renderProductTable();
+        handlePageEvents();
     });
     
     </script>
