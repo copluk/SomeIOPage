@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯購買者 - 內部貿易系統</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+<div id="app" class="flex h-screen">
+
+    <nav class="w-64 bg-white shadow-lg flex-shrink-0 flex flex-col">
+        <a href="./products.html" class="p-4 border-b flex items-center gap-3 hover:bg-gray-50 transition-colors">
+            <i class="fas fa-chart-line text-3xl text-indigo-600"></i>
+            <h1 class="text-xl font-bold text-gray-800">內部貿易系統</h1>
+        </a>
+        <ul class="flex-grow">
+            <li><a href="./suppliers.html" data-page="suppliers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-truck w-5 text-center"></i><span>供應商管理</span></a></li>
+            <li><a href="./buyers.html" data-page="buyers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-users w-5 text-center"></i><span>購買者管理</span></a></li>
+            <li><a href="./products.html" data-page="products" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-box-open w-5 text-center"></i><span>產品管理</span></a></li>
+            <li><a href="./attributes.html" data-page="attributes" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-tags w-5 text-center"></i><span>產品屬性管理</span></a></li>
+            <li><a href="./orders.html" data-page="orders" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-file-invoice-dollar w-5 text-center"></i><span>訂單管理</span></a></li>
+        </ul>
+    </nav>
+
+    <main id="page-content" class="flex-1 flex flex-col overflow-y-auto bg-gray-50">
+        <div class="text-center p-8 text-gray-500">正在載入資料...</div>
+    </main>
+</div>
+
+<script>
+    // --- 假資料，請替換為您提供的 dataEntity.md 對應的 JSON ---
+    const db = {
+        Users: [{ UserID: 1, FullName: "林業務" }, { UserID: 2, FullName: "陳經理" }],
+        Buyers: [
+            { BuyerID: 101, BuyerName: "A級牛排館", PaymentTerms: "月結60天", WebsiteURL: null, Remarks: "偏好油花較少的部位。" },
+            { BuyerID: 102, BuyerName: "饗食天堂餐飲集團", PaymentTerms: "月結45天", WebsiteURL: "https://www.eat-together.com", Remarks: "集團統一採購，需附檢驗報告。" }
+        ],
+        Buyer_User_Assignments: [{ BuyerID: 101, UserID: 1, ResponsibilityType: '主要業務' }, { BuyerID: 102, UserID: 2, ResponsibilityType: '主要業務' }],
+        Buyer_Contacts: [
+            { ContactID: 1011, BuyerID: 101, ContactName: "陳主廚", ContactRole: "主廚", Email: "chen.chef@asteak.com", Phone: "0912-345-678", IsPrimary: true },
+            { ContactID: 1021, BuyerID: 102, ContactName: "採購部林先生", ContactRole: "採購經理", Email: "procurement.lin@eat-together.com", Phone: "02-8780-8000", IsPrimary: true },
+            { ContactID: 1022, BuyerID: 102, ContactName: "財務部黃小姐", ContactRole: "財務", Email: "finance.huang@eat-together.com", Phone: "02-8780-8001", IsPrimary: false },
+        ]
+    };
+
+    // --- 共用輔助函式 (Helper Functions) ---
+    const findById = (collectionName, id, keyName) => db[collectionName].find(item => item[keyName] === id);
+    const highlightCurrentNav = () => {
+        const currentPage = 'buyers';
+        const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
+        }
+    };
+    const inputClass = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm";
+    const labelClass = "block text-sm font-medium text-gray-700";
+
+    // --- buyer-edit.html 頁面專屬的 JavaScript 邏輯 ---
+    const pageState = {
+        isEditMode: false,
+        buyerId: null,
+        buyerData: null,
+        activeTab: 'basic', // 'basic', 'contacts'
+    };
+
+    function renderPage() {
+        const pageContent = document.getElementById('page-content');
+        if (!pageContent) return;
+
+        const title = pageState.isEditMode ? `編輯購買者：${pageState.buyerData.BuyerName}` : '新增購買者';
+
+        pageContent.innerHTML = `
+            <div class="p-6 border-b bg-white sticky top-0 z-10"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-gray-900">${title}</h2><div class="space-x-3"><a href="./buyers.html" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">取消</a><button class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700">儲存</button></div></div></div>
+            <div class="p-6"><div class="border-b border-gray-200"><nav class="-mb-px flex space-x-8">${renderTabs()}</nav></div><div id="tab-content-container" class="mt-6">${renderTabContent()}</div></div>
+        `;
+    }
+
+    function renderTabs() {
+        const tabs = [
+            { key: 'basic', name: '基本資料與負責人' },
+            { key: 'contacts', name: '購買者聯絡人' },
+        ];
+        return tabs.map(t => `<button data-action="switch-tab" data-tab="${t.key}" class="py-4 px-1 border-b-2 font-medium text-sm ${pageState.activeTab === t.key ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}">${t.name}</button>`).join('');
+    }
+
+    function renderTabContent() {
+        switch (pageState.activeTab) {
+            case 'basic': return renderBasicInfoTab();
+            case 'contacts': return renderContactsTab();
+        }
+    }
+
+    function renderBasicInfoTab() {
+        const buyer = pageState.buyerData || {};
+        const assignment = pageState.isEditMode ? db.Buyer_User_Assignments.find(a => a.BuyerID === pageState.buyerId) : {};
+        const userOptions = db.Users.map(u => `<option value="${u.UserID}" ${assignment?.UserID === u.UserID ? 'selected' : ''}>${u.FullName}</option>`).join('');
+        return `<div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto space-y-6 fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><label class="${labelClass}">購買者名稱 *</label><input type="text" value="${buyer.BuyerName || ''}" class="${inputClass}"></div>
+                <div><label class="${labelClass}">我方業務負責人</label><select class="${inputClass}">${userOptions}</select></div>
+                <div><label class="${labelClass}">付款條件</label><input type="text" value="${buyer.PaymentTerms || ''}" class="${inputClass}"></div>
+                <div><label class="${labelClass}">官方網站</label><input type="url" value="${buyer.WebsiteURL || ''}" class="${inputClass}"></div>
+                <div class="md:col-span-2"><label class="${labelClass}">備註</label><textarea rows="4" class="${inputClass}">${buyer.Remarks || ''}</textarea></div>
+            </div>
+        </div>`;
+    }
+
+    function renderContactsTab() {
+        const contacts = pageState.isEditMode ? db.Buyer_Contacts.filter(c => c.BuyerID === pageState.buyerId) : [];
+        return `<div class="bg-white p-6 rounded-lg shadow-md max-w-6xl mx-auto fade-in">
+            <div class="flex justify-end mb-4"><button class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 text-sm">新增聯絡人</button></div>
+            <div class="space-y-4">
+            ${contacts.map(c => `<div class="grid grid-cols-12 gap-4 items-center p-3 border rounded-lg">
+                <div class="col-span-12 md:col-span-2"><label class="${labelClass}">聯絡人姓名 *</label><input type="text" value="${c.ContactName}" class="${inputClass}"></div>
+                <div class="col-span-12 md:col-span-2"><label class="${labelClass}">角色</label><input type="text" value="${c.ContactRole}" class="${inputClass}"></div>
+                <div class="col-span-12 md:col-span-3"><label class="${labelClass}">Email</label><input type="email" value="${c.Email}" class="${inputClass}"></div>
+                <div class="col-span-12 md:col-span-2"><label class="${labelClass}">電話</label><input type="tel" value="${c.Phone}" class="${inputClass}"></div>
+                <div class="col-span-6 md:col-span-2 pt-6 flex items-center gap-2"><input type="checkbox" ${c.IsPrimary ? 'checked' : ''} id="is-primary-${c.ContactID}" class="h-4 w-4 rounded border-gray-300 text-indigo-600"><label for="is-primary-${c.ContactID}">設為主要</label></div>
+                <div class="col-span-6 md:col-span-1 pt-6 text-right"><button class="text-red-500 hover:text-red-700">移除</button></div>
+            </div>`).join('') || `<p class="text-center text-gray-500 py-4">尚無聯絡人資料。</p>`}
+            </div>
+        </div>`;
+    }
+
+    function handlePageEvents() {
+        const pageContent = document.getElementById('page-content');
+        pageContent.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-action="switch-tab"]');
+            if (target) {
+                pageState.activeTab = target.dataset.tab;
+                renderPage();
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        highlightCurrentNav();
+        const urlParams = new URLSearchParams(window.location.search);
+        const buyerId = parseInt(urlParams.get('id'));
+        if (buyerId) {
+            pageState.isEditMode = true;
+            pageState.buyerId = buyerId;
+            pageState.buyerData = findById('Buyers', buyerId, 'BuyerID');
+        } else {
+            pageState.isEditMode = false;
+        }
+        renderPage();
+        handlePageEvents();
+    });
+
+</script>
+</body>
+</html>
