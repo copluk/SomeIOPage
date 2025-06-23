@@ -46,7 +46,7 @@
 <div id="modal-container" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4 fade-in"></div>
 
 <script>
-    // --- 資料模型 (Data Model) - V4.2 ---
+    // --- 資料模型 (Data Model) ---
     const db = {
          Users: [ { UserID: 1, FullName: "林業務" }, { UserID: 2, FullName: "陳經理" } ],
          Suppliers: [ { SupplierID: 1, SupplierName: "環球肉品公司" }, { SupplierID: 2, SupplierName: "頂級海鮮直送" } ],
@@ -58,24 +58,46 @@
          Product_Parts: [ { PartID: 1, PartName_ZH: "肋眼" }, { PartID: 3, PartName_ZH: "梅花" } ],
          Product_Specs: [ { SpecID: 1, SpecName_ZH: "M9" }, { SpecID: 2, SpecName_ZH: "Bellota" } ],
          Product_Packagings: [ { PackagingID: 2, PackagingName_ZH: "原塊" }, { PackagingID: 4, PackagingName_ZH: "真空包裝" } ],
-         Products: [
-            { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001", AreaID: 8, ProdNumID: 1, SubBrandID: 1 },
-            { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001", AreaID: 6, ProdNumID: 2, SubBrandID: 2 },
-         ], // CORRECTED: Added missing comma here
-         Supplier_Quotes: [
-             { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 },
-             { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 },
-             { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 },
-             { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 }
-         ],
-         Quotes_To_Buyers: [
-             { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, BID: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", QuotedCostPrice: 1860 },
-             { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, BID: 2160, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", QuotedCostPrice: 1860 },
-             { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: 2240, BID: 2240, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", QuotedCostPrice: 1860 },
-             { QuoteToBuyerID: 10, SupplierQuoteID: 2, ProductID: 1, BuyerID: 101, QuotedPrice: 2280, CustomerExpectedPrice: 2260, BID: 2260, QuoteTimestamp: "2025-06-02T11:00:00Z", Status: "Ordered", FinalSellingPrice: 2260, FinalCostPrice: 1870, QuotedCostPrice: 1870 },
-         ],
-         Orders: [ { OrderID: 10, OrderNumber: "ORD-202506-010", BuyerID: 101, SystemCreatedAt: "2025-06-03T10:00:00Z" } ],
-         Order_Line_Items: [ { LineItemID: 10, OrderID: 10, QuoteToBuyerID: 10 } ]
+         Products: [ { ProductID: 1, SupplierID: 1, CategoryID: 1, PartID: 1, SpecID: 1, PackagingID: 2, ProductDisplayName: "澳洲和牛M9肋眼", ProductCode: "AW-RB-G9-001", AreaID: 8, ProdNumID: 1, SubBrandID: 1 }, { ProductID: 2, SupplierID: 1, CategoryID: 2, PartID: 3, SpecID: 2, PackagingID: 4, ProductDisplayName: "西班牙伊比利豬梅花", ProductCode: "SP-Pork-001", AreaID: 6, ProdNumID: 2, SubBrandID: 2 }, ],
+         Supplier_Quotes: [ { SupplierQuoteID: 1, ProductID: 1, EffectiveTimestamp: "2025-05-20T00:00:00Z", SupplierOriginalPrice: 1800, InternalCostPrice: 1850 }, { SupplierQuoteID: 2, ProductID: 1, EffectiveTimestamp: "2025-06-01T00:00:00Z", SupplierOriginalPrice: 1820, InternalCostPrice: 1870 }, { SupplierQuoteID: 3, ProductID: 1, EffectiveTimestamp: "2025-06-10T00:00:00Z", SupplierOriginalPrice: 1810, InternalCostPrice: 1860 }, { SupplierQuoteID: 4, ProductID: 2, EffectiveTimestamp: "2025-06-08T00:00:00Z", SupplierOriginalPrice: 805, InternalCostPrice: 855 } ],
+         Quotes_To_Buyers: [ { QuoteToBuyerID: 1, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: 2200, CustomerExpectedPrice: null, BID: null, QuoteTimestamp: "2025-06-11T10:00:00Z", Status: "Negotiating", QuotedCostPrice: 1860 }, { QuoteToBuyerID: 2, SupplierQuoteID: 3, ProductID: 1, BuyerID: 101, QuotedPrice: null, CustomerExpectedPrice: 2150, BID: 2160, QuoteTimestamp: "2025-06-11T11:00:00Z", Status: "Negotiating", QuotedCostPrice: 1860 }, { QuoteToBuyerID: 3, SupplierQuoteID: 3, ProductID: 1, BuyerID: 102, QuotedPrice: 2250, CustomerExpectedPrice: 2240, BID: 2240, QuoteTimestamp: "2025-06-12T09:30:00Z", Status: "Negotiating", QuotedCostPrice: 1860 }, { QuoteToBuyerID: 10, SupplierQuoteID: 2, ProductID: 1, BuyerID: 101, QuotedPrice: 2280, CustomerExpectedPrice: 2260, BID: 2260, QuoteTimestamp: "2025-06-02T11:00:00Z", Status: "Ordered", FinalSellingPrice: 2260, FinalCostPrice: 1870, QuotedCostPrice: 1870 },{
+    "QuoteToBuyerID": 11,
+    "SupplierQuoteID": 1,
+    "ProductID": 1,
+    "BuyerID": 101,
+    "QuotedPrice": 2300,
+    "CustomerExpectedPrice": null,
+    "BID": null,
+    "QuoteTimestamp": "2025-05-21T10:00:00Z",
+    "Status": "Negotiating",
+    "QuotedCostPrice": 1850
+  },
+  {
+    "QuoteToBuyerID": 12,
+    "SupplierQuoteID": 1,
+    "ProductID": 1,
+    "BuyerID": 101,
+    "QuotedPrice": 2280,
+    "CustomerExpectedPrice": 2270,
+    "BID": 2270,
+    "QuoteTimestamp": "2025-05-21T14:30:00Z",
+    "Status": "Negotiating",
+    "QuotedCostPrice": 1850
+  },
+  {
+    "QuoteToBuyerID": 13,
+    "SupplierQuoteID": 1,
+    "ProductID": 1,
+    "BuyerID": 102,
+    "QuotedPrice": 2320,
+    "CustomerExpectedPrice": 2300,
+    "BID": 2300,
+    "QuoteTimestamp": "2025-05-22T09:00:00Z",
+    "Status": "Negotiating",
+    "QuotedCostPrice": 1850
+  } ],
+         Orders: [{ OrderID: 10, OrderNumber: "ORD-202506-010", BuyerID: 101, SystemCreatedAt: "2025-06-03T10:00:00Z" }],
+         Order_Line_Items: [{ LineItemID: 10, OrderID: 10, QuoteToBuyerID: 10 }]
     };
 
     // --- 共用輔助函式 ---
@@ -107,14 +129,7 @@
     }
 
     function renderBasicInfo(product) {
-        const supplier = findById('Suppliers', product.SupplierID, 'SupplierID');
-        const category = findById('Product_Categories', product.CategoryID, 'CategoryID');
-        const part = findById('Product_Parts', product.PartID, 'PartID');
-        const spec = findById('Product_Specs', product.SpecID, 'SpecID');
-        const packaging = findById('Product_Packagings', product.PackagingID, 'PackagingID');
-        const area = findById('Production_Areas', product.AreaID, 'AreaID');
-        const prodNum = findById('Supplier_Production_Numbers', product.ProdNumID, 'ProdNumID');
-        const brand = findById('Sub_Brands', product.SubBrandID, 'SubBrandID');
+        const supplier = findById('Suppliers', product.SupplierID, 'SupplierID'); const category = findById('Product_Categories', product.CategoryID, 'CategoryID'); const part = findById('Product_Parts', product.PartID, 'PartID'); const spec = findById('Product_Specs', product.SpecID, 'SpecID'); const packaging = findById('Product_Packagings', product.PackagingID, 'PackagingID'); const area = findById('Production_Areas', product.AreaID, 'AreaID'); const prodNum = findById('Supplier_Production_Numbers', product.ProdNumID, 'ProdNumID'); const brand = findById('Sub_Brands', product.SubBrandID, 'SubBrandID');
         return `<div class="mb-6 bg-white p-6 rounded-lg shadow"><div class="flex justify-between items-start"><div><h2 class="text-3xl font-bold text-gray-900">${product.ProductDisplayName}</h2><p class="text-gray-500 mt-1">產品代碼: <span class="font-mono">${product.ProductCode}</span></p></div><button class="text-gray-500 hover:text-gray-800 font-semibold text-sm">編輯基本資料</button></div><div class="mt-4 pt-4 border-t grid grid-cols-2 md:grid-cols-4 gap-4 text-sm"><div><strong class="block text-gray-500">供應商</strong> ${supplier?.SupplierName||'N/A'}</div><div><strong class="block text-gray-500">產地</strong> ${area?.AreaName||'N/A'}</div><div><strong class="block text-gray-500">產號</strong> ${prodNum?.ProductionNumber||'N/A'}</div><div><strong class="block text-gray-500">品牌</strong> ${brand?.SubBrandName||'N/A'}</div><div><strong class="block text-gray-500">種類</strong> ${category?.PartName_ZH||'N/A'}</div><div><strong class="block text-gray-500">部位</strong> ${part?.PartName_ZH||'N/A'}</div><div><strong class="block text-gray-500">規格</strong> ${spec?.SpecName_ZH||'N/A'}</div><div><strong class="block text-gray-500">包裝</strong> ${packaging?.PackagingName_ZH||'N/A'}</div></div></div>`;
     }
 
@@ -122,30 +137,40 @@
         return `<div class="bg-white p-6 rounded-lg shadow-md mt-8"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-xl font-bold text-gray-800">供應商報價 (內部成本) 區</h3><button data-action="show-add-cost-modal" class="bg-orange-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-orange-600">新增成本</button></div><div class="overflow-x-auto"><table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-3 text-left font-semibold text-gray-600">出價時間</th><th class="p-3 text-left font-semibold text-gray-600">供應商報價</th><th class="p-3 text-left font-semibold text-gray-600">業務報價</th></tr></thead><tbody class="divide-y divide-gray-200">${allSupplierQuotes.map(sq => `<tr><td class="p-3">${formatDateTime(sq.EffectiveTimestamp)}</td><td class="p-3">$${sq.SupplierOriginalPrice.toLocaleString()}</td><td class="p-3 text-red-600 font-semibold">$${sq.InternalCostPrice.toLocaleString()}</td></tr>`).join('')}</tbody></table></div></div>`;
     }
 
+    // *** MODIFIED FUNCTION ***
     function renderQuotesToBuyers(product, allSupplierQuotes) {
         const latestSupplierQuote = allSupplierQuotes[0] || null;
         const historicalQuotes = allSupplierQuotes.slice(1);
         const orderedQuoteIds = new Set(db.Order_Line_Items.map(item => item.QuoteToBuyerID));
-        const renderNegotiationTable = (quotes) => {
+
+        const renderNegotiationTable = (quotes, isLatestPeriod) => { // Added isLatestPeriod flag
             if (quotes.length === 0) return `<p class="text-sm text-gray-500 px-3 py-4">此時段無對外報價紀錄。</p>`;
             const latestQuotesByBuyer = new Map();
             quotes.forEach(q => { const existing = latestQuotesByBuyer.get(q.BuyerID); if (!existing || new Date(q.QuoteTimestamp) > new Date(existing.QuoteTimestamp)) { latestQuotesByBuyer.set(q.BuyerID, q); } });
             const latestQuoteIds = new Set([...latestQuotesByBuyer.values()].map(q => q.QuoteToBuyerID));
-            return `<table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">購買者</th><th class="p-2 text-left">當次業務報價</th><th class="p-2 text-left">購買者出價 BID</th><th class="p-2 text-left">購買者預期價格</th><th class="p-2 text-left">報價時間</th><th class="p-2 text-left">操作 / 成交資訊</th></tr></thead><tbody class="divide-y divide-gray-200">${quotes.map(q => {
-                const isLatestForThisBuyer = latestQuoteIds.has(q.QuoteToBuyerID);
-                const isOrdered = orderedQuoteIds.has(q.QuoteToBuyerID);
-                let actionOrInfoHtml = '';
-                if (isOrdered) {
-                    const order = findById('Orders', db.Order_Line_Items.find(li => li.QuoteToBuyerID === q.QuoteToBuyerID)?.OrderID, 'OrderID');
-                    actionOrInfoHtml = `<div class="text-xs text-blue-600">訂單: ${order?.OrderNumber}<br>成交價(賣): $${q.FinalSellingPrice}<br>成交價(買): $${q.FinalCostPrice}<br>時間: ${formatDateTime(order?.SystemCreatedAt)}</div>`;
-                } else if (isLatestForThisBuyer) {
-                    actionOrInfoHtml = `<button data-action="show-pre-close-modal" class="bg-teal-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-teal-600">預定成交</button>`;
-                }
-                return `<tr><td class="p-2">${findById('Buyers', q.BuyerID, 'BuyerID')?.BuyerName}</td><td class="p-2">$${q.QuotedPrice || '-'}</td><td class="p-2">$${q.BID || '-'}</td><td class="p-2">$${q.CustomerExpectedPrice || '-'}</td><td class="p-2">${formatDateTime(q.QuoteTimestamp)}</td><td class="p-2">${actionOrInfoHtml || '-'}</td></tr>`
-            }).join('')}</tbody></table>`;
+
+            return `<table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">購買者</th><th class="p-2 text-left">當次業務報價</th><th class="p-2 text-left">購買者出價 BID</th><th class="p-2 text-left">購買者預期價格</th><th class="p-2 text-left">報價時間</th><th class="p-2 text-left">操作 / 成交資訊</th></tr></thead>
+                <tbody class="divide-y divide-gray-200">${quotes.map(q => {
+                    const isLatestForThisBuyer = latestQuoteIds.has(q.QuoteToBuyerID);
+                    const isOrdered = orderedQuoteIds.has(q.QuoteToBuyerID);
+                    let actionOrInfoHtml = '';
+
+                    if (isOrdered) {
+                        const lineItem = db.Order_Line_Items.find(li => li.QuoteToBuyerID === q.QuoteToBuyerID);
+                        const order = findById('Orders', lineItem?.OrderID, 'OrderID');
+                        actionOrInfoHtml = `<div class="text-xs text-blue-600">訂單: <a href="./order-detail.html?id=${order?.OrderID}" class="underline hover:text-blue-800">${order?.OrderNumber}</a><br>成交價(賣): $${q.FinalSellingPrice}<br>成交價(買): $${q.FinalCostPrice}<br>時間: ${formatDateTime(order?.SystemCreatedAt)}</div>`;
+                    } else if (isLatestForThisBuyer && isLatestPeriod) { // Button only appears if it's the latest period
+                        actionOrInfoHtml = `<button data-action="show-pre-close-modal" class="bg-teal-500 text-white text-xs font-bold py-1 px-2 rounded hover:bg-teal-600">預定成交</button>`;
+                    }
+                    return `<tr><td class="p-2">${findById('Buyers', q.BuyerID, 'BuyerID')?.BuyerName}</td><td class="p-2">$${q.QuotedPrice || '-'}</td><td class="p-2">$${q.BID || '-'}</td><td class="p-2">$${q.CustomerExpectedPrice || '-'}</td><td class="p-2">${formatDateTime(q.QuoteTimestamp)}</td><td class="p-2">${actionOrInfoHtml || '-'}</td></tr>`
+                }).join('')}</tbody>
+            </table>`;
         };
         const quotesForLatestPeriod = latestSupplierQuote ? db.Quotes_To_Buyers.filter(qtb => qtb.SupplierQuoteID === latestSupplierQuote.SupplierQuoteID) : [];
-        return `<div class="bg-white p-6 rounded-lg shadow-md mt-8"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-xl font-bold text-gray-800">對購買者報價區</h3><button data-action="show-add-quote-modal" class="bg-green-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-green-600">新增報價</button></div><div class="border-2 border-indigo-200 rounded-lg p-4"><h4 class="text-lg font-bold text-indigo-700">主要顯示區：最新時段</h4>${latestSupplierQuote ? `<div class="bg-indigo-50 p-3 rounded-lg my-4"><h5 class="font-semibold text-sm">供應商報價資訊 (於 ${formatDateTime(latestSupplierQuote.EffectiveTimestamp)})</h5><div class="flex gap-8 mt-1"><div><span class="text-xs">業務報價:</span> <strong class="text-red-600">$${latestSupplierQuote.InternalCostPrice}</strong></div><div><span class="text-xs">供應商報價:</span> <strong>$${latestSupplierQuote.SupplierOriginalPrice}</strong></div></div></div><div class="overflow-x-auto">${renderNegotiationTable(quotesForLatestPeriod)}</div>` : `<p class="text-gray-500 py-4">此產品尚無供應商報價。</p>`}</div><div class="mt-6"><h4 class="text-lg font-bold text-gray-700 mb-2">歷史時段列表</h4><div class="space-y-2">${historicalQuotes.map(sq => `<details class="bg-gray-50 rounded-lg border hover:bg-gray-100 transition"><summary class="p-4 font-semibold cursor-pointer flex justify-between text-sm"><span>報價時段: ${formatDateTime(sq.EffectiveTimestamp)}</span><span>業務報價: <strong class="text-red-600">$${sq.InternalCostPrice}</strong> / 供應商報價: $${sq.SupplierOriginalPrice}</span></summary><div class="p-4 border-t bg-white overflow-x-auto">${renderNegotiationTable(db.Quotes_To_Buyers.filter(qtb => qtb.SupplierQuoteID === sq.SupplierQuoteID))}</div></details>`).join('')}</div></div></div>`;
+        return `<div class="bg-white p-6 rounded-lg shadow-md mt-8"><div class="flex justify-between items-center border-b pb-3 mb-4"><h3 class="text-xl font-bold text-gray-800">對購買者報價區</h3><button data-action="show-add-quote-modal" class="bg-green-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-green-600">新增對外報價</button></div>
+            <div class="border-2 border-indigo-200 rounded-lg p-4"><h4 class="text-lg font-bold text-indigo-700">主要顯示區：最新時段</h4>${latestSupplierQuote ? `<div class="bg-indigo-50 p-3 rounded-lg my-4"><h5 class="font-semibold text-sm">供應商報價資訊 (於 ${formatDateTime(latestSupplierQuote.EffectiveTimestamp)})</h5><div class="flex gap-8 mt-1"><div><span class="text-xs">業務報價:</span> <strong class="text-red-600">$${latestSupplierQuote.InternalCostPrice}</strong></div><div><span class="text-xs">供應商報價:</span> <strong>$${latestSupplierQuote.SupplierOriginalPrice}</strong></div></div></div><div class="overflow-x-auto">${renderNegotiationTable(quotesForLatestPeriod, true)}</div>` : `<p class="text-gray-500 py-4">此產品尚無供應商報價。</p>`}</div>
+            <div class="mt-6"><h4 class="text-lg font-bold text-gray-700 mb-2">歷史時段列表</h4><div class="space-y-2">${historicalQuotes.map(sq => `<details class="bg-gray-50 rounded-lg border hover:bg-gray-100 transition"><summary class="p-4 font-semibold cursor-pointer flex justify-between text-sm"><span>報價時段: ${formatDateTime(sq.EffectiveTimestamp)}</span><span>業務報價: <strong class="text-red-600">$${sq.InternalCostPrice}</strong> / 供應商報價: $${sq.SupplierOriginalPrice}</span></summary><div class="p-4 border-t bg-white overflow-x-auto">${renderNegotiationTable(db.Quotes_To_Buyers.filter(qtb => qtb.SupplierQuoteID === sq.SupplierQuoteID), false)}</div></details>`).join('')}</div></div>
+        </div>`;
     }
 
     // --- Event Handlers & Initial Load ---
@@ -155,7 +180,7 @@
             const target = e.target.closest('[data-action]'); if (!target) return;
             const { action } = target.dataset;
             if (action === 'show-add-cost-modal') { showModal('新增成本', getModalContent('add-cost')); }
-            else if (action === 'show-add-quote-modal') { showModal('新增報價', getModalContent('add-quote')); }
+            else if (action === 'show-add-quote-modal') { showModal('新增對外報價', getModalContent('add-quote')); }
             else if (action === 'show-pre-close-modal') { showModal('預定成交', getModalContent('pre-close')); }
         });
         modalContainer.addEventListener('click', (e) => { if (e.target.id === 'modal-container' || e.target.closest('[data-action="close-modal"]')) { closeModal(); } });
