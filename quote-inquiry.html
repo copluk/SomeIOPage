@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綜合報價查詢 - 內部貿易系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .ts-control { padding: 0.5rem !important; border-radius: 0.5rem !important; }
+        .ts-dropdown .ts-dropdown-content { max-height: 250px; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+<div id="app" class="flex h-screen">
+    <!-- Navigation Sidebar -->
+    <nav class="w-64 bg-white shadow-lg flex-shrink-0 flex flex-col">
+        <a href="./products.html" class="p-4 border-b flex items-center gap-3 hover:bg-gray-50 transition-colors">
+            <i class="fas fa-chart-line text-3xl text-indigo-600"></i>
+            <h1 class="text-xl font-bold text-gray-800">內部貿易系統</h1>
+        </a>
+        <ul class="flex-grow">
+            <li><a href="./suppliers.html" data-page="suppliers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-truck w-5 text-center"></i><span>供應商管理</span></a></li>
+            <li><a href="./buyers.html" data-page="buyers" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-users w-5 text-center"></i><span>購買者管理</span></a></li>
+            <li><a href="./products.html" data-page="products" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-box-open w-5 text-center"></i><span>產品管理</span></a></li>
+            <li><a href="./attributes.html" data-page="attributes" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-tags w-5 text-center"></i><span>產品屬性管理</span></a></li>
+            <li><a href="./orders.html" data-page="orders" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-file-invoice-dollar w-5 text-center"></i><span>訂單管理</span></a></li>
+            <li><a href="./orderFinance.html" data-page="orderFinance" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-chart-pie w-5 text-center"></i><span>訂單利潤</span></a></li>
+            <li><a href="./quote-inquiry.html" data-page="quote-inquiry" class="flex items-center gap-3 p-4 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"><i class="fas fa-search-dollar w-5 text-center"></i><span>綜合報價查詢</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto bg-gray-50">
+        <div class="fade-in max-w-full mx-auto">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">綜合報價查詢</h2>
+
+            <!-- Filter Panel -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div><label for="filter-supplier" class="block text-sm font-medium text-gray-700 mb-1">供應商</label><select id="filter-supplier" multiple></select></div>
+                    <div><label for="filter-buyer" class="block text-sm font-medium text-gray-700 mb-1">購買者</label><select id="filter-buyer" multiple></select></div>
+                    <div><label for="filter-product" class="block text-sm font-medium text-gray-700 mb-1">產品</label><select id="filter-product" multiple></select></div>
+                    <div><label for="filter-category" class="block text-sm font-medium text-gray-700 mb-1">產品種類</label><select id="filter-category" multiple></select></div>
+                    <div><label for="filter-part" class="block text-sm font-medium text-gray-700 mb-1">部位</label><select id="filter-part" multiple></select></div>
+                    <div><label for="filter-spec" class="block text-sm font-medium text-gray-700 mb-1">規格</label><select id="filter-spec" multiple></select></div>
+                    <div><label for="filter-packaging" class="block text-sm font-medium text-gray-700 mb-1">包裝</label><select id="filter-packaging" multiple></select></div>
+                    <div><label for="filter-salesperson" class="block text-sm font-medium text-gray-700 mb-1">負責業務</label><select id="filter-salesperson" multiple></select></div>
+                    <div class="xl:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">出價時間</label><div class="flex items-center space-x-2"><input type="date" id="filter-date-start" class="w-full p-2 border border-gray-300 rounded-lg"><span class="text-gray-500">to</span><input type="date" id="filter-date-end" class="w-full p-2 border border-gray-300 rounded-lg"></div></div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button id="btn-clear-filters" class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">清除條件</button>
+                    <button id="btn-apply-filters" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700">查詢</button>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="bg-white shadow-lg rounded-lg overflow-x-auto">
+                <table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-3 text-left font-semibold">報價時間</th><th class="p-3 text-left font-semibold">供應商</th><th class="p-3 text-left font-semibold">購買者</th><th class="p-3 text-left font-semibold">產品名稱</th><th class="p-3 text-left font-semibold">產品規格</th><th class="p-3 text-right font-semibold">業務報價</th><th class="p-3 text-right font-semibold">當次業務報價</th><th class="p-3 text-right font-semibold">客戶出價(BID)</th><th class="p-3 text-right font-semibold">客戶預期價</th><th class="p-3 text-left font-semibold">狀態</th><th class="p-3 text-right font-semibold">最終成交價(賣)</th><th class="p-3 text-right font-semibold">最終成交價(買)</th><th class="p-3 text-left font-semibold">負責業務</th></tr></thead><tbody id="results-table-body" class="divide-y divide-gray-200"></tbody></table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="database.js"></script>
+<script>
+    (function() {
+        if (typeof db === 'undefined') { console.error("Database (db.js) not loaded."); return; }
+
+        const { Suppliers, Buyers, Products, Product_Categories, Product_Parts, Product_Specs, Product_Packagings, Users, Quotes_To_Buyers } = db;
+        const tomSelectInstances = {};
+
+        const initTomSelect = (id, options) => {
+            const el = document.getElementById(id);
+            if (el) tomSelectInstances[id] = new TomSelect(el, { plugins: ['remove_button'], ...options });
+        };
+
+        const populateSelect = (id, data, valueField, textField) => {
+            if (tomSelectInstances[id] && data) {
+                tomSelectInstances[id].addOptions(data.map(item => ({ value: item[valueField], text: item[textField] })));
+            }
+        };
+
+        const formatCurrency = num => (typeof num === 'number' && !isNaN(num)) ? '$' + num.toLocaleString('en-US') : '-';
+
+        const productMap = new Map(Products.map(p => [p.ProductID, p]));
+        const supplierMap = new Map(Suppliers.map(s => [s.SupplierID, s.SupplierName]));
+        const buyerMap = new Map(Buyers.map(b => [b.BuyerID, b.BuyerName]));
+        const userMap = new Map(Users.map(u => [u.UserID, u.FullName]));
+        const categoryMap = new Map(Product_Categories.map(c => [c.CategoryID, c.PartName_ZH]));
+        const partMap = new Map(Product_Parts.map(p => [p.PartID, p.PartName_ZH]));
+        const specMap = new Map(Product_Specs.map(s => [s.SpecID, s.SpecName_ZH]));
+
+        const renderTable = (quotes) => {
+            const tableBody = document.getElementById('results-table-body');
+            if (!tableBody) return;
+            tableBody.innerHTML = !quotes || quotes.length === 0 
+                ? '<tr><td colspan="13" class="p-4 text-center text-gray-500">沒有符合條件的報價紀錄。</td></tr>'
+                : quotes.map(quote => {
+                    const product = productMap.get(quote.ProductID);
+                    const productSpec = product ? `${categoryMap.get(product.CategoryID) || ''} / ${partMap.get(product.PartID) || ''} / ${specMap.get(product.SpecID) || ''}` : 'N/A';
+                    const supplierName = product ? supplierMap.get(product.SupplierID) : '-';
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3">${new Date(quote.QuoteTimestamp).toLocaleDateString()}</td>
+                            <td class="p-3">${supplierName}</td>
+                            <td class="p-3">${buyerMap.get(quote.BuyerID) || '-'}</td>
+                            <td class="p-3">${product?.ProductDisplayName || '-'}</td>
+                            <td class="p-3">${productSpec}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.QuotedCostPrice)}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.QuotedPrice)}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.BID)}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.CustomerExpectedPrice)}</td>
+                            <td class="p-3">${quote.Status || '-'}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.FinalSellingPrice)}</td>
+                            <td class="p-3 text-right">${formatCurrency(quote.FinalCostPrice)}</td>
+                            <td class="p-3">${userMap.get(quote.CreatedByUserID) || '-'}</td>
+                        </tr>`;
+                }).join('');
+        };
+
+        const applyFilters = () => {
+            const getValues = id => tomSelectInstances[id] ? tomSelectInstances[id].getValue() : [];
+            const selectedSuppliers = getValues('filter-supplier').map(Number);
+            const selectedBuyers = getValues('filter-buyer').map(Number);
+            const selectedProducts = getValues('filter-product').map(Number);
+            const selectedCategories = getValues('filter-category').map(Number);
+            const selectedParts = getValues('filter-part').map(Number);
+            const selectedSpecs = getValues('filter-spec').map(Number);
+            const selectedPackagings = getValues('filter-packaging').map(Number);
+            const selectedSalespersons = getValues('filter-salesperson').map(Number);
+            const startDate = document.getElementById('filter-date-start').value;
+            const endDate = document.getElementById('filter-date-end').value;
+
+            const filteredQuotes = Quotes_To_Buyers.filter(quote => {
+                const product = productMap.get(quote.ProductID);
+                if (!product) return false;
+
+                if (selectedSuppliers.length && !selectedSuppliers.includes(product.SupplierID)) return false;
+                if (selectedBuyers.length && !selectedBuyers.includes(quote.BuyerID)) return false;
+                if (selectedProducts.length && !selectedProducts.includes(quote.ProductID)) return false;
+                if (selectedCategories.length && !selectedCategories.includes(product.CategoryID)) return false;
+                if (selectedParts.length && !selectedParts.includes(product.PartID)) return false;
+                if (selectedSpecs.length && !selectedSpecs.includes(product.SpecID)) return false;
+                if (selectedPackagings.length && !selectedPackagings.includes(product.PackagingID)) return false;
+                if (selectedSalespersons.length && !selectedSalespersons.includes(quote.CreatedByUserID)) return false;
+
+                if (startDate) {
+                    const quoteDate = new Date(quote.QuoteTimestamp);
+                    if (quoteDate < new Date(startDate)) return false;
+                }
+                if (endDate) {
+                    const quoteDate = new Date(quote.QuoteTimestamp);
+                    if (quoteDate > new Date(new Date(endDate).setHours(23, 59, 59, 999))) return false;
+                }
+                return true;
+            });
+            renderTable(filteredQuotes);
+        };
+
+        const clearFilters = () => {
+            Object.values(tomSelectInstances).forEach(instance => instance.clear());
+            document.getElementById('filter-date-start').value = '';
+            document.getElementById('filter-date-end').value = '';
+            renderTable(Quotes_To_Buyers);
+        };
+
+        // Initialize
+        document.querySelector(`a[data-page="${"quote-inquiry"}"]`)?.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
+        
+        initTomSelect('filter-supplier');
+        initTomSelect('filter-buyer');
+        initTomSelect('filter-product');
+        initTomSelect('filter-category');
+        initTomSelect('filter-part');
+        initTomSelect('filter-spec');
+        initTomSelect('filter-packaging');
+        initTomSelect('filter-salesperson');
+
+        populateSelect('filter-supplier', Suppliers, 'SupplierID', 'SupplierName');
+        populateSelect('filter-buyer', Buyers, 'BuyerID', 'BuyerName');
+        populateSelect('filter-product', Products, 'ProductID', 'ProductDisplayName');
+        populateSelect('filter-category', Product_Categories, 'CategoryID', 'PartName_ZH');
+        populateSelect('filter-part', Product_Parts, 'PartID', 'PartName_ZH');
+        populateSelect('filter-spec', Product_Specs, 'SpecID', 'SpecName_ZH');
+        populateSelect('filter-packaging', Product_Packagings, 'PackagingID', 'PackagingName_ZH');
+        populateSelect('filter-salesperson', Users, 'UserID', 'FullName');
+
+        document.getElementById('btn-apply-filters').addEventListener('click', applyFilters);
+        document.getElementById('btn-clear-filters').addEventListener('click', clearFilters);
+
+        renderTable(Quotes_To_Buyers);
+    })();
+</script>
+</body>
+</html>
