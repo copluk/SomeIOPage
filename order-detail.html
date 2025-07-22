@@ -45,16 +45,20 @@
 </div>
 
 <script>
-    // --- 資料模型 (Data Model) - UPDATED with more order details ---
+    // --- 資料模型 (Data Model) - UPDATED with more product details ---
     const db = {
          Users: [ { UserID: 1, FullName: "林業務" }, { UserID: 2, FullName: "陳經理" } ],
          Suppliers: [ { SupplierID: 1, SupplierName: "環球肉品公司" }, { SupplierID: 2, SupplierName: "頂級海鮮直送" } ],
          Buyers: [ { BuyerID: 101, BuyerName: "A級牛排館" }, { BuyerID: 102, BuyerName: "饗食天堂餐飲集團" } ],
+         Production_Areas: [{ AreaID: 1, AreaName: "巴西", AreaCode: "BR" }, { AreaID: 2, AreaName: "越南", AreaCode: "VN" }, { AreaID: 3, AreaName: "加拿大", AreaCode: "CAN" }, { AreaID: 4, AreaName: "日本", AreaCode: "JP" }, { AreaID: 5, AreaName: "智利", AreaCode: "CL" }, { AreaID: 6, AreaName: "西班牙", AreaCode: "ES" }, { AreaID: 7, AreaName: "台灣", AreaCode: "TW" }, { AreaID: 8, AreaName: "澳洲", AreaCode: "AU" }],
+         Supplier_Production_Numbers: [{ ProdNumID: 1, ProductionNumber: "SIF 121" }, { ProdNumID: 6, ProductionNumber: "CHL 333" }],
+         Product_Categories: [{ CategoryID: 1, PartName_ZH: "牛肉" }, { CategoryID: 3, PartName_ZH: "海鮮" }],
+         Product_Parts: [{ PartID: 1, PartName_ZH: "肋眼" }, { PartID: 7, PartName_ZH: "鮭魚" }],
+         Product_Specs: [ { SpecID: 1, SpecName_ZH: "M9" }, { SpecID: 6, SpecName_ZH: "輪切" } ],
          Products: [
-            { ProductID: 1, ProductDisplayName: "澳洲和牛M9肋眼", SpecID: 1 },
-            { ProductID: 6, ProductDisplayName: "智利鮭魚", SpecID: 6 }
+            { ProductID: 1, ProductDisplayName: "澳洲和牛M9肋眼", CategoryID: 1, PartID: 1, SpecID: 1, AreaID: 8, ProdNumID: 1 },
+            { ProductID: 6, ProductDisplayName: "智利鮭魚", CategoryID: 3, PartID: 7, SpecID: 6, AreaID: 5, ProdNumID: 6 }
          ],
-         Product_Specs: [ { SpecID: 1, SpecName_ZH: "M9 Grade" }, { SpecID: 6, SpecName_ZH: "輪切" } ],
          Quotes_To_Buyers: [
             { QuoteToBuyerID: 10, ProductID: 1, QuotedPrice: 2260 },
             { QuoteToBuyerID: 7, ProductID: 6, QuotedPrice: 1100 },
@@ -155,6 +159,10 @@
                 <div class="overflow-x-auto"><table class="min-w-full text-sm">
                     <thead class="bg-gray-100"><tr>
                         <th class="p-3 text-left font-semibold">產品顯示名稱</th>
+                        <th class="p-3 text-left font-semibold">種類</th>
+                        <th class="p-3 text-left font-semibold">產地</th>
+                        <th class="p-3 text-left font-semibold">廠號</th>
+                        <th class="p-3 text-left font-semibold">部位</th>
                         <th class="p-3 text-left font-semibold">規格</th>
                         <th class="p-3 text-left font-semibold">最終成交價(賣)</th>
                         <th class="p-3 text-left font-semibold">最終成本價(買)</th>
@@ -163,12 +171,20 @@
                     <tbody class="divide-y divide-gray-200">
                     ${lineItems.map(item => {
                         const product = findById('Products', item.ProductID, 'ProductID');
+                        const category = findById('Product_Categories', product?.CategoryID, 'CategoryID');
+                        const area = findById('Production_Areas', product?.AreaID, 'AreaID');
+                        const prodNum = findById('Supplier_Production_Numbers', product?.ProdNumID, 'ProdNumID');
+                        const part = findById('Product_Parts', product?.PartID, 'PartID');
                         const spec = findById('Product_Specs', product?.SpecID, 'SpecID');
                         return `<tr>
                             <td class="p-3">${product?.ProductDisplayName || '-'}</td>
+                            <td class="p-3">${category?.PartName_ZH || '-'}</td>
+                            <td class="p-3">${area?.AreaName || '-'}</td>
+                            <td class="p-3">${prodNum?.ProductionNumber || '-'}</td>
+                            <td class="p-3">${part?.PartName_ZH || '-'}</td>
                             <td class="p-3">${spec?.SpecName_ZH || '-'}</td>
-                            <td class="p-3 font-semibold">$${item.FinalSellingPrice.toLocaleString()}</td>
-                            <td class="p-3 text-red-600">$${item.FinalCostPrice.toLocaleString()}</td>
+                            <td class="p-3 font-semibold">${item.FinalSellingPrice.toLocaleString()}</td>
+                            <td class="p-3 text-red-600">${item.FinalCostPrice.toLocaleString()}</td>
                             <td class="p-3">${item.Weight.toFixed(2)}</td>
                         </tr>`
                     }).join('')}

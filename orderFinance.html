@@ -82,6 +82,34 @@
                     </div>
                 </div>
 
+                <!-- Summary Block -->
+                <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">列表總計</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-500">總重量</p>
+                            <p id="summary-total-weight" class="text-xl font-bold text-gray-900">-</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-500">總成本</p>
+                            <p id="summary-total-cost" class="text-xl font-bold text-red-600">-</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-500">總售價</p>
+                            <p id="summary-total-revenue" class="text-xl font-bold text-green-600">-</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-500">總利潤</p>
+                            <p id="summary-total-profit" class="text-xl font-bold text-blue-600">-</p>
+                        </div>
+                        <div class="bg-indigo-50 p-3 rounded-lg col-span-2 lg:col-span-1">
+                            <p class="text-sm text-indigo-500">平均利潤率</p>
+                            <p id="summary-average-margin" class="text-xl font-bold text-indigo-700">-</p>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- 8.1 訂單表格 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-x-auto">
                     <table class="min-w-full text-sm">
@@ -136,16 +164,53 @@
             </div>
         </main>
     </div>
-
+    <script src="./database.js"></script>
     <script>
-        const db = { /* ... db object ... */ };
-        // JS for highlighting nav and handling events would go here
         document.addEventListener('DOMContentLoaded', () => {
+            // Highlight active nav link
             const currentPage = 'orderFinance';
             const activeLink = document.querySelector(`a[data-page="${currentPage}"]`);
             if (activeLink) {
                 activeLink.classList.add('bg-indigo-50', 'text-indigo-600', 'font-bold', 'border-l-4', 'border-indigo-600');
             }
+
+            // --- NEW: Summary Calculation Logic ---
+            function updateSummary() {
+                const tableBody = document.getElementById('finance-table-body');
+                const rows = tableBody.querySelectorAll('tr');
+
+                let totalWeight = 0;
+                let totalCost = 0;
+                let totalRevenue = 0;
+                let totalProfit = 0;
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length < 9) return;
+
+                    // Helper to parse formatted numbers
+                    const parseNumber = (text) => {
+                        return parseFloat(text.replace(/[$,\sA-Za-z]/g, '')) || 0;
+                    };
+
+                    totalWeight += parseNumber(cells[4].textContent);
+                    totalCost += parseNumber(cells[5].textContent);
+                    totalRevenue += parseNumber(cells[6].textContent);
+                    totalProfit += parseNumber(cells[7].textContent);
+                });
+
+                const averageMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+
+                // Update summary display
+                document.getElementById('summary-total-weight').textContent = `${totalWeight.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg`;
+                document.getElementById('summary-total-cost').textContent = `${totalCost.toLocaleString('en-US')}`;
+                document.getElementById('summary-total-revenue').textContent = `${totalRevenue.toLocaleString('en-US')}`;
+                document.getElementById('summary-total-profit').textContent = `${totalProfit.toLocaleString('en-US')}`;
+                document.getElementById('summary-average-margin').textContent = `${averageMargin.toFixed(2)}%`;
+            }
+
+            // Initial calculation on page load
+            updateSummary();
         });
     </script>
 </body>
