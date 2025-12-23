@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline: TSK-002 (詢價)</title>
+    <style>
+        /* All styles are copied from opportunity_task_list_main.html for consistency */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); min-height: 85vh; overflow: hidden; }
+        .left-panel { flex: 1; padding: 20px; border-right: 1px solid #eee; background-color: #fcfcfc; overflow-y: auto; }
+        .right-panel { flex: 2; padding: 20px; overflow-y: auto; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        .filter-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .filter-section button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 10px; }
+        .filter-section button.active { background-color: #45a049; }
+        .list-group { list-style: none; padding: 0; margin: 0; }
+        .list-group-item { background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 10px; }
+        .list-group-item.selected { background-color: #e0f2f7; border-color: #007bff; }
+        .list-group-item h3 { margin: 0; font-size: 16px; }
+        .list-group-item p { margin: 5px 0 0; color: #555; font-size: 14px; }
+        .task-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        .task-list-item { display: block; padding: 10px; border-radius: 4px; margin-top: 5px; text-decoration: none; color: inherit; }
+        .task-list-item.selected, .task-list-item:hover { background-color: #e9ecef; }
+        .task-list-item h4 { font-size: 14px; margin: 0 0 5px 0; }
+        .timeline { border-left: 2px solid #ddd; padding-left: 20px; position: relative; margin-top: 20px; }
+        .timeline-item { position: relative; margin-bottom: 25px; }
+        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 5px; width: 12px; height: 12px; background-color: #007bff; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 2px #007bff; }
+        .timeline-item-content { background-color: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; }
+        .timeline-item-content h4 { margin-top: 0; margin-bottom: 5px; }
+        .timeline-item-content p { margin: 0; font-size: 14px; line-height: 1.6; }
+        .timeline-item-date { font-size: 12px; color: #999; margin-bottom: 5px; display: block; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: white; font-weight: bold; }
+        .status-inquiry { background-color: #f0ad4e; }
+        .status-processing { background-color: #0275d8; }
+        .status-quoted { background-color: #5cb85c; }
+        .status-negotiating { background-color: #5bc0de; }
+        .status-deal-pending { background-color: #28a745; }
+        .status-lost { background-color: #d9534f; }
+        .status-cancelled { background-color: #6c757d; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .section-header h2 { margin: 0; font-size: 20px; }
+        .back-link { font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="section-header">
+                <h2>商機任務清單</h2>
+                <a href="opportunity_task_list_main.html" class="back-link">← 返回主列表</a>
+            </div>
+            <div class="filter-section">
+                <button>按客戶分類</button>
+                <button class="active">按狀態分類</button>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-negotiating">協商/追蹤</span></h3>
+                    <p>任務數量: 1</p>
+                    <ul class="task-list">
+                        <a href="timeline_negotiating.html" class="task-list-item">
+                            <h4>TSK-005 (客戶B - 產品C)</h4>
+                            <p>更新: 1天前</p>
+                        </a>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-processing">需求處理中</span></h3>
+                    <p>任務數量: 1</p>
+                     <ul class="task-list">
+                        <a href="timeline_processing.html" class="task-list-item">
+                            <h4>TSK-003 (客戶D - 產品E)</h4>
+                            <p>更新: 剛才</p>
+                        </a>
+                    </ul>
+                </li>
+                <li class="list-group-item selected">
+                    <h3><span class="status-badge status-inquiry">詢價</span></h3>
+                    <p>任務數量: 2</p>
+                    <ul class="task-list">
+                        <a href="timeline_inquiry.html" class="task-list-item">
+                            <h4>TSK-001 (客戶A - 產品A)</h4>
+                            <p>更新: 2天前</p>
+                        </a>
+                        <a href="timeline_inquiry_TSK-002.html" class="task-list-item selected">
+                            <h4>TSK-002 (客戶X - 產品Y)</h4>
+                            <p>更新: 3天前</p>
+                        </a>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="right-panel">
+            <div class="section-header">
+                <h2>任務詳情 (TSK-002) & Timeline</h2>
+            </div>
+            <h3>任務 ID: TSK-002 (客戶 X - 產品 Y)</h3>
+            <p>目前狀態: <span class="status-badge status-inquiry">詢價</span></p>
+            <p>處理時間: 3 天</p>
+            <p>關聯客戶: 客戶 X</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">3天前</span>
+                        <h4>任務建立</h4>
+                        <p>客戶X通過官網表單詢問產品Y的價格。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2天前</span>
+                        <h4>發送Email確認需求</h4>
+                        <p>已發送標準產品資訊與規格表給客戶，等待客戶確認具體需求量。</p>
+                        <p><strong>附加資訊:</strong> sent_email_to_client_x.eml</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

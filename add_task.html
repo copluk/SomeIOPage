@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增商機任務</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .form-container { max-width: 800px; margin: 20px auto; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .form-group .input-group { display: flex; }
+        .form-group .input-group input { border-right: none; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+        .form-group .input-group button { border: 1px solid #ccc; border-left: none; padding: 0 15px; background-color: #f0f0f0; cursor: pointer; border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+        .file-upload-wrapper { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 5px; cursor: pointer; }
+        .file-upload-wrapper:hover { border-color: #007bff; }
+        .file-upload-wrapper input[type="file"] { display: none; }
+        .form-actions { margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px; }
+        .form-actions button, .back-link { padding: 12px 25px; border-radius: 5px; font-size: 16px; font-weight: bold; text-decoration: none; cursor: pointer; text-align: center; }
+        .back-link { background-color: #6c757d; color: white; border: none; }
+        .btn-primary { background-color: #007bff; color: white; border: none; }
+        .btn-secondary { background-color: #5cb85c; color: white; border: none; }
+        
+        /* Tab Styles */
+        .tab-nav { border-bottom: 1px solid #ccc; display: flex; margin-bottom: 20px; }
+        .tab-button { background: none; border: none; padding: 15px 20px; cursor: pointer; font-size: 16px; color: #555; border-bottom: 3px solid transparent; }
+        .tab-button.active { color: #007bff; border-bottom-color: #007bff; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>新增商機任務</h1>
+
+        <form onsubmit="return false;">
+            <!-- Shared Fields -->
+            <div class="form-group">
+                <label for="client-select">選擇客戶</label>
+                <select id="client-select" name="client">
+                    <option value="">-- 請選擇一個客戶 --</option>
+                    <option value="client-a">客戶 A</option>
+                    <option value="client-b">客戶 B</option>
+                    <option value="client-c">客戶 C</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="due-date">預計處理時間 (Due Date)</label>
+                <input type="date" id="due-date" name="due-date">
+            </div>
+
+            <hr style="margin: 30px 0; border: 1px solid #f0f0f0;">
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button type="button" class="tab-button active" onclick="openTab(event, 'generalTask')">一般任務</button>
+                <button type="button" class="tab-button" onclick="openTab(event, 'quoteReference')">引用報價</button>
+            </div>
+
+            <!-- Tab 1: General Task Content -->
+            <div id="generalTask" class="tab-content active">
+                <div class="form-group">
+                    <label for="mail-sync">Mail 連動</label>
+                    <div class="input-group">
+                        <input type="text" id="mail-sync" name="mail-sync" placeholder="貼上郵件連結或ID">
+                        <button type="button">同步</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-description">文字輸入</label>
+                    <textarea id="task-description" name="task-description" placeholder="輸入任務的詳細描述、客戶需求或任何筆記..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file-upload">檔案上傳 (對話截圖、客戶文件等)</label>
+                    <div class="file-upload-wrapper" onclick="document.getElementById('file-upload').click();">
+                        點擊此處或拖曳檔案上傳
+                        <input type="file" id="file-upload" name="file-upload" multiple>
+                    </div>
+                </div>
+                <div class="form-actions">
+                     <a href="opportunity_task_list_main.html" class="back-link">取消</a>
+                     <button type="submit" class="btn-primary" onclick="alert('任務已儲存，狀態設定為「詢價」')">儲存 (狀態: 詢價)</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Quote Reference Content -->
+            <div id="quoteReference" class="tab-content">
+                <div class="form-group">
+                    <label for="quote-reference">報價引用</label>
+                    <input type="text" id="quote-reference" name="quote-reference" placeholder="輸入報價單號, e.g., QTB-009">
+                </div>
+                <div class="form-actions">
+                     <a href="opportunity_task_list_main.html" class="back-link">取消</a>
+                     <button type="submit" class="btn-secondary" onclick="alert('任務已儲存，狀態設定為「已報價」')">儲存 (狀態: 已報價)</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="history-section" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">客戶過往資訊</h2>
+
+            <div class="past-quotes" style="margin-bottom: 30px;">
+                <h3 style="color: #4CAF50; margin-bottom: 15px;">過往報價紀錄 (客戶 A)</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; font-size: 14px;">
+                        <strong>報價單號: QTB-0123</strong> (2025-11-15) - 產品A, 總價: $12,500 USD <span style="float: right; color: #f0ad4e;">已報價</span>
+                    </li>
+                    <li style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; font-size: 14px;">
+                        <strong>報價單號: QTB-0110</strong> (2025-10-01) - 產品B, 總價: $8,000 USD <span style="float: right; color: #d9534f;">已失效</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="past-orders">
+                <h3 style="color: #007bff; margin-bottom: 15px;">成立訂單紀錄 (客戶 A)</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; font-size: 14px;">
+                        <strong>訂單編號: ORD-0045</strong> (2025-09-20) - 產品C, 總價: $20,000 USD <span style="float: right; color: #28a745;">已完成</span>
+                    </li>
+                    <li style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 5px; padding: 10px 15px; margin-bottom: 10px; font-size: 14px;">
+                        <strong>訂單編號: ORD-0030</strong> (2025-07-10) - 產品A, 總價: $15,000 USD <span style="float: right; color: #28a745;">已完成</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Get all elements with class="tab-content" and hide them
+            var tabcontent = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tab-button" and remove the class "active"
+            var tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

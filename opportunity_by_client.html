@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商機任務清單 - 依客戶檢視</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            min-height: 85vh;
+            overflow: hidden;
+        }
+        .left-panel, .middle-panel, .right-panel {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .left-panel { /* 客戶列表 */
+            flex: 1;
+            border-right: 1px solid #eee;
+            background-color: #fcfcfc;
+        }
+        .middle-panel { /* 商機列表 */
+            flex: 1.2;
+            border-right: 1px solid #eee;
+        }
+        .right-panel { /* Timeline */
+            flex: 2;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-group-item {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .list-group-item:hover {
+            background-color: #eef;
+        }
+        .list-group-item.selected {
+            background-color: #e0f2f7;
+            border-color: #007bff;
+        }
+        .list-group-item h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #007bff;
+            font-size: 18px;
+        }
+        .list-group-item p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .timeline {
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+            position: relative;
+            margin-top: 20px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background-color: #007bff;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #007bff;
+        }
+        .timeline-item-content {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        .timeline-item-content h4 { margin-top: 0; margin-bottom: 5px; }
+        .timeline-item-content p { margin: 0; font-size: 14px; line-height: 1.6; }
+        .timeline-item-date { font-size: 12px; color: #999; margin-bottom: 5px; display: block; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        .status-inquiry { background-color: #f0ad4e; }
+        .status-processing { background-color: #0275d8; }
+        .status-quoted { background-color: #5cb85c; }
+        .status-negotiating { background-color: #5bc0de; }
+        .status-deal-pending { background-color: #28a745; }
+        .status-lost { background-color: #d9534f; }
+        .status-cancelled { background-color: #6c757d; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .section-header h2 { margin: 0; font-size: 20px; }
+        .add-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .client-info {
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .client-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Panel 1: 客戶列表 -->
+        <div class="left-panel">
+            <div class="section-header">
+                <h2>客戶列表</h2>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item selected">
+                    <h3>客戶 A</h3>
+                    <p>進行中商機: 3</p>
+                </li>
+                <li class="list-group-item">
+                    <h3>客戶 B</h3>
+                    <p>進行中商機: 1</p>
+                </li>
+                 <li class="list-group-item">
+                    <h3>客戶 C</h3>
+                    <p>進行中商機: 0</p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Panel 2: 商機列表 -->
+        <div class="middle-panel">
+            <div class="section-header">
+                <h2>客戶 A 的商機</h2>
+                <button class="add-button">+ 新增商機</button>
+            </div>
+            <div class="client-info">
+                <h4>客戶過往資料</h4>
+                <p><strong>偏好:</strong> 偏好高品質產品，對價格敏感度較高。</p>
+                <p><strong>上次成交:</strong> 2025-08-15 (訂單 #ORD-2025-08-123)</p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item selected">
+                    <h3>商機 #OP-001: 產品 A</h3>
+                    <p>狀態: <span class="status-badge status-negotiating">協商/追蹤</span></p>
+                    <p>更新時間: 2025-10-24</p>
+                </li>
+                <li class="list-group-item">
+                    <h3>商機 #OP-002: 產品 B (特規)</h3>
+                    <p>狀態: <span class="status-badge status-processing">需求處理中</span></p>
+                    <p>更新時間: 2025-10-22</p>
+                </li>
+                <li class="list-group-item">
+                    <h3>商機 #OP-003: 產品 C</h3>
+                    <p>狀態: <span class="status-badge status-lost">結案-流失</span></p>
+                    <p>更新時間: 2025-09-30</p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Panel 3: Timeline -->
+        <div class="right-panel">
+            <div class="section-header">
+                <h2>商機 #OP-001 Timeline</h2>
+                <button class="add-button">+ 新增動態</button>
+            </div>
+            <p>目前狀態: <span class="status-badge status-negotiating">協商/追蹤</span> | 處理時間: 5 天</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2025-10-20 10:30 AM</span>
+                        <h4>任務建立 (狀態: 詢價)</h4>
+                        <p>與客戶 A 建立初步聯繫，客戶對產品 A 表達興趣，要求提供初步報價。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2025-10-21 02:00 PM</span>
+                        <h4>發送初步報價 (狀態: 已報價)</h4>
+                        <p>向客戶 A 發送產品 A 的初步報價單 (參考報價 ID: QTB-001)。</p>
+                        <p><strong>附加資訊:</strong> 報價單截圖.jpg</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2025-10-22 09:00 AM</span>
+                        <h4>客戶回應: 價格太高 (狀態: 協商/追蹤)</h4>
+                        <p>客戶 A 反饋價格超出預算，希望討論更多彈性方案或替代品項。</p>
+                        <p><strong>客戶回應事項:</strong> 太貴</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2025-10-23 11:00 AM</span>
+                        <h4>內部討論替代方案</h4>
+                        <p>與銷售經理討論後，考慮推薦產品 A 的低階版本或提供批量折扣。</p>
+                        <p><strong>附加資訊:</strong> 內部郵件討論.eml</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-item-content">
+                        <span class="timeline-item-date">2025-10-24 03:00 PM</span>
+                        <h4>預計再次聯絡客戶</h4>
+                        <p>準備新的報價方案，預計明日聯絡客戶 A 進行深度溝通。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

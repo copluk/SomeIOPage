@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商機任務清單 - 依狀態檢視</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); min-height: 85vh; overflow: hidden; }
+        .left-panel { flex: 1; padding: 20px; border-right: 1px solid #eee; background-color: #fcfcfc; overflow-y: auto; }
+        .right-panel { flex: 2; padding: 20px; overflow-y: auto; display: flex; align-items: center; justify-content: center; }
+        h1, h2, h3, h4 { color: #2c3e50; }
+        .filter-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .filter-section button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 10px; }
+        .filter-section button.active { background-color: #45a049; }
+        .list-group { list-style: none; padding: 0; margin: 0; }
+        .list-group-item { background-color: #ffffff; border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 10px; }
+        .list-group-item:hover { background-color: #f0f8ff; }
+        .list-group-item h3 { margin: 0; font-size: 16px; }
+        .list-group-item p { margin: 5px 0 0; color: #555; font-size: 14px; }
+        .task-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        .task-list-item { display: block; padding: 10px; border-radius: 4px; margin-top: 5px; text-decoration: none; color: inherit; transition: background-color 0.2s ease; }
+        .task-list-item:hover { background-color: #e9ecef; }
+        .task-list-item h4 { font-size: 14px; margin: 0 0 5px 0; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: white; font-weight: bold; }
+        .status-inquiry { background-color: #f0ad4e; }
+        .status-processing { background-color: #0275d8; }
+        .status-quoted { background-color: #5cb85c; }
+        .status-negotiating { background-color: #5bc0de; }
+        .status-deal-pending { background-color: #28a745; }
+        .status-lost { background-color: #d9534f; }
+        .status-cancelled { background-color: #6c757d; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .section-header h2 { margin: 0; font-size: 20px; }
+        .add-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .placeholder-text { text-align: center; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="section-header">
+                <h2>商機任務清單</h2>
+                <a href="add_task.html" class="add-button" style="text-decoration: none; color: white;">+ 新增任務</a>
+            </div>
+            <div class="filter-section">
+                <button onclick="alert('切換到客戶分類視圖')">按客戶分類</button>
+                <button class="active">按狀態分類</button>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-negotiating">協商/追蹤</span></h3>
+                    <p>任務數量: 1</p>
+                    <ul class="task-list">
+                        <a href="timeline_negotiating.html" class="task-list-item">
+                            <h4>TSK-005 (客戶B - 產品C)</h4>
+                            <p>更新: 1天前</p>
+                        </a>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-processing">需求處理中</span></h3>
+                    <p>任務數量: 1</p>
+                     <ul class="task-list">
+                        <a href="timeline_processing.html" class="task-list-item">
+                            <h4>TSK-003 (客戶D - 產品E)</h4>
+                            <p>更新: 剛才</p>
+                        </a>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-quoted">已報價</span></h3>
+                    <p>任務數量: 1</p>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-inquiry">詢價</span></h3>
+                    <p>任務數量: 2</p>
+                    <ul class="task-list">
+                        <a href="timeline_inquiry.html" class="task-list-item">
+                            <h4>TSK-001 (客戶A - 產品A)</h4>
+                            <p>更新: 2天前</p>
+                        </a>
+                         <a href="timeline_inquiry_TSK-002.html" class="task-list-item">
+                            <h4>TSK-002 (客戶X - 產品Y)</h4>
+                            <p>更新: 3天前</p>
+                        </a>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-deal-pending">成交待辦</span></h3>
+                    <p>任務數量: 1</p>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-lost">結案-流失</span></h3>
+                    <p>任務數量: 1</p>
+                </li>
+                <li class="list-group-item">
+                    <h3><span class="status-badge status-cancelled">結案-取消</span></h3>
+                    <p>任務數量: 1</p>
+                </li>
+            </ul>
+        </div>
+        <div class="right-panel">
+            <div class="placeholder-text">
+                <h2>點擊左側任務以查看其詳細時間軸</h2>
+                <p>只有「協商/追蹤」、「需求處理中」、「詢價」狀態下的任務提供時間軸預覽。</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
