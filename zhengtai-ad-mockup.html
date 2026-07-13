@@ -1,662 +1,452 @@
-<!DOCTYPE html>
-<html lang="zh-Hant-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>正泰廣告社｜台中大里招牌設計‧30年在地</title>
-  <style>
-    /* 我們的 Clean & Premium Tech-Craft 風格設計 CSS 變數 */
-    :root {
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", "Helvetica Neue", Arial, sans-serif;
-      
-      /* 調整為略帶暖調的質感白/灰 */
-      --color-bg: #fcfbfa;           /* 全域背景底色 (Warm off-white) */
-      --color-surface: #ffffff;      /* 卡片背景色 (Pure white) */
-      --color-text: #1c1917;         /* 深炭黑 (Stone 900) */
-      --color-text-muted: #57534e;   /* 暖灰 (Stone 600) */
-      --color-border: #e7e5e4;       /* 溫和框線 (Stone 200) */
-      
-      /* 點綴與重點色 */
-      --color-accent: #0f172a;       /* 黑色裝飾 */
-      --color-accent-soft: #f5f5f4;  /* 輔助灰底 (Stone 100) */
-      --color-line: #06c755;         /* LINE action green */
-      --color-line-hover: #05b34c;
-      --color-brand-primary: #059669;/* 質感翡翠綠，用作 hover 與邊框聚焦 */
-
-      /* 陰影系統 */
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-
-      /* 網頁間距與邊角 */
-      --radius: 1rem;
-      --radius-sm: 0.625rem;
-      --content-width: 64rem;
-      --line-height: 1.75;
-      
-      --space-1: 0.25rem;
-      --space-2: 0.5rem;
-      --space-3: 0.75rem;
-      --space-4: 1rem;
-      --space-6: 1.5rem;
-      --space-8: 2rem;
-      --space-12: 3rem;
-      --space-16: 4rem;
-      --space-24: 6rem;
-
-      --text-sm: 0.875rem;
-      --text-base: 1rem;
-      --text-lg: 1.125rem;
-      --text-xl: 1.375rem;
-      --text-2xl: 1.75rem;
-      --text-3xl: 2.25rem;
-      --text-4xl: 3rem;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      -webkit-text-size-adjust: 100%;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: var(--font-sans);
-      font-size: var(--text-base);
-      line-height: var(--line-height);
-      color: var(--color-text);
-      
-      /* 混合漸層：頂部淡綠與底部的極淡炭色漸變，配上精細點狀紋理 */
-      background-color: var(--color-bg);
-      background-image: 
-        radial-gradient(circle at 80% 100px, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
-        radial-gradient(circle at 10% 800px, rgba(15, 23, 42, 0.02) 0%, transparent 40%),
-        radial-gradient(var(--color-border) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 24px 24px;
-      background-attachment: fixed;
-      
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    h1, h2, h3 {
-      line-height: 1.25;
-      font-weight: 700;
-      margin: 0;
-      color: var(--color-text);
-    }
-
-    p {
-      margin: 0;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.2em;
-      text-decoration-color: #b6b3aa;
-      transition: text-decoration-color 0.2s ease;
-    }
-
-    a:hover {
-      text-decoration-color: currentColor;
-    }
-
-    /* Layout helpers */
-    .container {
-      width: 100%;
-      max-width: var(--content-width);
-      margin-inline: auto;
-      padding-inline: var(--space-12);
-    }
-
-    @media (max-width: 48rem) {
-      .container {
-        padding-inline: var(--space-6);
-      }
-    }
-
-    .section {
-      padding-block: var(--space-12);
-    }
-
-    .section-subhead {
-      font-size: var(--text-2xl);
-      margin-bottom: var(--space-8);
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-2);
-      min-height: 3rem;
-      padding: var(--space-3) var(--space-6);
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: var(--text-base);
-      line-height: 1.2;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-line {
-      background: var(--color-line);
-      color: white;
-    }
-
-    .btn-line:hover {
-      background: var(--color-line-hover);
-      color: white;
-    }
-
-    .btn-quiet {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      color: var(--color-text);
-    }
-
-    .btn-quiet:hover {
-      background: var(--color-accent-soft);
-      border-color: #d6d3d1;
-    }
-
-    /* Hero Section */
-    .hero {
-      padding-block: var(--space-16) var(--space-12);
-    }
-
-    .hero-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-6);
-    }
-
-    h1 {
-      font-size: clamp(2.125rem, 5.5vw, 3.5rem);
-      font-weight: 800;
-      line-height: 1.15;
-      max-width: 24ch;
-      text-wrap: balance;
-      word-break: keep-all;
-    }
-
-    .hero-subhead {
-      font-size: var(--text-lg);
-      color: var(--color-text-muted);
-    }
-
-    .hero-scope {
-      font-size: var(--text-sm);
-      color: var(--color-text-muted);
-      letter-spacing: 0.02em;
-    }
-
-    .hero-ctas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-3);
-      margin-top: var(--space-2);
-    }
-
-    /* Service List Grid */
-    .service-grid {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      column-gap: var(--space-8);
-      row-gap: var(--space-8);
-    }
-
-    .service-item {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: var(--space-8);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .service-item:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--color-brand-primary);
-    }
-
-    .service-item h3 {
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-2);
-      font-weight: 700;
-    }
-
-    .service-item p {
-      color: var(--color-text-muted);
-      font-size: var(--text-base);
-    }
-
-    /* FAQ Section */
-    .faq-inner {
-      max-width: 44rem;
-    }
-
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-    }
-
-    .faq-item {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      padding: var(--space-4) var(--space-6);
-      transition: all 0.2s ease;
-    }
-
-    .faq-item:hover {
-      border-color: var(--color-brand-primary);
-    }
-
-    .faq-item[open] {
-      box-shadow: var(--shadow-sm);
-      border-color: var(--color-brand-primary);
-    }
-
-    summary {
-      font-weight: 700;
-      font-size: var(--text-lg);
-      line-height: 1.4;
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--space-4);
-      outline: none;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary::after {
-      content: '＋';
-      color: var(--color-text-muted);
-      font-weight: 400;
-      flex-shrink: 0;
-    }
-
-    .faq-item[open] summary::after {
-      content: '－';
-    }
-
-    .faq-item p {
-      padding-top: var(--space-4);
-      margin: 0;
-      color: var(--color-text-muted);
-      border-top: 1px solid var(--color-accent-soft);
-      margin-top: var(--space-3);
-    }
-
-    /* Visit Layout Section */
-    .visit-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      column-gap: var(--space-12);
-      align-items: start;
-    }
-
-    .visit-info {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-8);
-    }
-
-    /* NapBlock */
-    .nap-plaque {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-2);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      border-radius: var(--radius);
-      padding-block: var(--space-8);
-      padding-inline: var(--space-8);
-      margin-inline: calc(-1 * var(--space-8));
-    }
-
-    .nap-name {
-      font-size: var(--text-xl);
-      font-weight: 700;
-    }
-
-    .nap-address {
-      color: var(--color-text-muted);
-    }
-
-    .nap-plaque .btn {
-      margin-top: var(--space-3);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .nap-secondary {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* HoursBlock */
-    .hours-subhead {
-      font-size: var(--text-xl);
-      margin-bottom: var(--space-4);
-    }
-
-    .hours-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .hours-row {
-      display: flex;
-      gap: var(--space-8);
-      padding-block: var(--space-1);
-    }
-
-    .hours-day {
-      width: 4.5rem;
-      flex-shrink: 0;
-    }
-
-    .hours-time {
-      font-variant-numeric: tabular-nums;
-    }
-
-    .hours-row.closed {
-      color: var(--color-text-muted);
-    }
-
-    /* MapEmbed */
-    .map {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-6);
-    }
-
-    .map-frame {
-      width: 100%;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-
-    .map-frame iframe {
-      display: block;
-    }
-
-    /* RWD */
-    @media (max-width: 48rem) {
-      .service-grid {
-        grid-template-columns: 1fr;
-        row-gap: var(--space-6);
-      }
-      .service-item {
-        padding: var(--space-6);
-      }
-      .visit-grid {
-        grid-template-columns: 1fr;
-        row-gap: var(--space-8);
-      }
-      .hero {
-        padding-block: var(--space-12) var(--space-8);
-      }
-      .hero-ctas {
-        width: 100%;
-        flex-direction: column;
-      }
-      .hero-ctas .btn {
-        width: 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <main class="container">
-    
-    <!-- Hero Block -->
-    <section class="hero">
-      <div class="hero-inner">
-        <h1>正泰廣告社｜台中大里招牌設計‧30年在地</h1>
-        <p class="hero-subhead">
-          台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。We also service in English and Chinese.
-        </p>
-        <p class="hero-scope">服務範圍：台中、大里、太平、霧峰、烏日</p>
-        <div class="hero-ctas">
-          <a class="btn btn-line" href="tel:0933194646">
-            打電話 0933 194 646
-          </a>
-          <a class="btn btn-quiet" href="https://www.google.com/maps/search/?api=1&query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%85%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" target="_blank">
-            導航到店
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Services Block -->
-    <section class="section" id="services">
-      <h2 class="section-subhead">服務項目</h2>
-      <ul class="service-grid">
-        <li class="service-item">
-          <h3>專業招牌燈箱</h3>
-          <p>中空板、無接縫、壓克力及 LED 燈箱製作，提升店面全天候辨識度</p>
-        </li>
-        <li class="service-item">
-          <h3>店面看板工程</h3>
-          <p>各類外牆廣告看板、防颱帆布與鐵架施工</p>
-        </li>
-        <li class="service-item">
-          <h3>精緻銅字與立體字</h3>
-          <p>金屬銅字、壓克力立體字，適用企業形象牆、門牌或精品標示</p>
-        </li>
-        <li class="service-item">
-          <h3>商業名片</h3>
-          <p>多種紙材與加工選擇，從極簡風格到高質感設計印刷</p>
-        </li>
-        <li class="service-item">
-          <h3>菜單與傳單</h3>
-          <p>防水菜單、折頁傳單與宣傳 DM 製作</p>
-        </li>
-        <li class="service-item">
-          <h3>三聯單與單據</h3>
-          <p>客製化聯單、估價單及收據印刷，版面清晰複寫流暢</p>
-        </li>
-        <li class="service-item">
-          <h3>宣傳印刷品設計</h3>
-          <p>從專業設計排版到高品質輸出，一站式解決方案</p>
-        </li>
-        <li class="service-item">
-          <h3>廣告紅布條</h3>
-          <p>彩色布條與旗幟製作，適合開幕、特賣 or 促銷活動</p>
-        </li>
-        <li class="service-item">
-          <h3>電腦割字</h3>
-          <p>精密割字服務，防水耐用，適用玻璃貼、牆面標示或營業時間說明</p>
-        </li>
-        <li class="service-item">
-          <h3>大型看板帆布</h3>
-          <p>高品質大圖噴墨帆布，適合大面積外牆廣告、工地圍籬或活動</p>
-        </li>
-      </ul>
-    </section>
-
-    <!-- Why Us / Features Block (uses ServiceList style in dev) -->
-    <section class="section" id="features">
-      <h2 class="section-subhead">為什麼選我們</h2>
-      <ul class="service-grid">
-        <li class="service-item">
-          <h3>在地深耕超過三十年</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>設計到安裝一站式服務</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>頭家親切、耐心、專業</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>價格公道實在、風雨無阻使命必達</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>製作快速，還會教客人如何操作</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>5.0 滿分口碑，在地有口皆碑</h3>
-          <p></p>
-        </li>
-        <li class="service-item">
-          <h3>老闆娘熱情好客又可愛</h3>
-          <p></p>
-        </li>
-      </ul>
-    </section>
-
-    <!-- FAQ Block -->
-    <section class="section" id="faq">
-      <div class="faq-inner">
-        <h2 class="section-subhead">常見問題</h2>
-        <div class="faq-list">
-          <details class="faq-item">
-            <summary>可以急件製作嗎？</summary>
-            <p>請來訊洽詢</p>
-          </details>
-          <details class="faq-item">
-            <summary>招牌吊工施作範圍到哪裡？彰化、南投可以嗎？</summary>
-            <p>主力服務範圍在台中/大里/太平/霧峰/烏日，但其他地區請來訊洽詢，老闆會熱心的服務</p>
-          </details>
-          <details class="faq-item">
-            <summary>有最小接單量或起訂金額嗎？</summary>
-            <p>服務項目眾多，請來訊洽詢</p>
-          </details>
-          <details class="faq-item">
-            <summary>可以只割字、我自己貼嗎？</summary>
-            <p>可以，老闆還會熱情關心與精美教學</p>
-          </details>
-          <details class="faq-item">
-            <summary>如果我需要設計畫面，有提供服務嗎？</summary>
-            <p>本店配有專案設計師，提供各式平面設計服務(需收費)</p>
-          </details>
-          <details class="faq-item">
-            <summary>檔案格式有限制嗎？</summary>
-            <p>服務項目眾多，要求的格式不盡相同，請事先詢問，或提供檔案做確認</p>
-          </details>
-          <details class="faq-item">
-            <summary>AI檔是用Ai生成的檔案嗎？</summary>
-            <p>.ai檔是一種向量量，是一種軟體的特定格式，不是AI工具產生的圖檔喔</p>
-          </details>
-          <details class="faq-item">
-            <summary>為什麼我有提供檔案，老闆說要調整還要收費？</summary>
-            <p>數位顯示與印刷要求的檔案品質不同，為了最好的呈現，我們必須協助調整，且過程複雜。設計人員很辛苦，提供酬勞是為了讓我們有更好的服務</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- Visit Block (Maps + Nap + Hours) -->
-    <section class="section visit">
-      <div class="visit-grid">
-        <div class="visit-info">
-          
-          <!-- NapBlock -->
-          <div class="nap-plaque" id="contact">
-            <h2 class="nap-name">正泰廣告社</h2>
-            <a class="nap-address" href="https://www.google.com/maps/search/?api=1&query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%85%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" target="_blank" rel="noopener">412臺中市大里區新里里新興路33號</a>
-            <a class="btn btn-line" href="tel:0933194646">電話 0933 194 646</a>
-            <p class="nap-secondary">市話 (04) 2406-4200</p>
-          </div>
-
-          <!-- HoursBlock -->
-          <div class="hours" id="hours">
-            <h2 class="hours-subhead">營業時間</h2>
-            <ul class="hours-list">
-              <li class="hours-row">
-                <span class="hours-day">星期一</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row">
-                <span class="hours-day">星期二</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row">
-                <span class="hours-day">星期三</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row">
-                <span class="hours-day">星期四</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row">
-                <span class="hours-day">星期五</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row">
-                <span class="hours-day">星期六</span>
-                <span class="hours-time">09:00–20:00</span>
-              </li>
-              <li class="hours-row closed">
-                <span class="hours-day">星期日</span>
-                <span class="hours-time">公休</span>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-
-        <!-- MapEmbed -->
-        <div class="map" id="map">
-          <div class="map-frame">
-            <iframe
-              title="Google 地圖位置"
-              src="https://maps.google.com/maps?q=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%85%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F&output=embed"
-              width="100%"
-              height="360"
-              style="border:0;"
-              loading="lazy"
-            ></iframe>
-          </div>
-          <a class="btn btn-quiet" href="https://www.google.com/maps/search/?api=1&query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%85%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" target="_blank" rel="noopener">
-            在 Google 地圖查看評論與導航
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-</body>
-</html>
+
+<!DOCTYPE html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" href="/favicon.ico"><meta name="generator" content="Astro v7.0.4"><title>正泰廣告社｜台中大里招牌設計‧30年在地</title><meta name="description" content="台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。We also service in English and Chinese."><link rel="canonical" href="https://chuetiam.com/zhengtai-ad"><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:title" content="正泰廣告社｜台中大里招牌設計‧30年在地"><meta property="og:description" content="台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。We also service in English and Chinese."><meta property="og:url" content="https://chuetiam.com/zhengtai-ad"><meta property="og:locale" content="zh_TW"><!-- Twitter --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="正泰廣告社｜台中大里招牌設計‧30年在地"><meta name="twitter:description" content="台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。We also service in English and Chinese."><!-- Page-level JSON-LD injected here (ProfessionalService / Service / FAQPage) --><script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"正泰廣告社","address":{"@type":"PostalAddress","streetAddress":"412臺中市大里區新里里新興路33號"},"telephone":"0933 194 646","url":"https://chuetiam.com/zhengtai-ad","description":"台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。We also service in English and Chinese.","areaServed":[{"@type":"Place","name":"台中"},{"@type":"Place","name":"大里"},{"@type":"Place","name":"太平"},{"@type":"Place","name":"霧峰"},{"@type":"Place","name":"烏日"}],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":"Monday","opens":"09:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Tuesday","opens":"09:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Wednesday","opens":"09:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Thursday","opens":"09:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Friday","opens":"09:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"20:00"}],"knowsLanguage":["中文","English"]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"可以急件製作嗎？","acceptedAnswer":{"@type":"Answer","text":"請來訊洽詢"}},{"@type":"Question","name":"招牌吊工施作範圍到哪裡？彰化、南投可以嗎？","acceptedAnswer":{"@type":"Answer","text":"主力服務範圍在台中/大里/太平/霧峰/烏日，但其他地區請來訊洽詢，老闆會熱心的服務"}},{"@type":"Question","name":"有最小接單量或起訂金額嗎？","acceptedAnswer":{"@type":"Answer","text":"服務項目眾多，請來訊洽詢"}},{"@type":"Question","name":"可以只割字、我自己貼嗎？","acceptedAnswer":{"@type":"Answer","text":"可以，老闆還會熱情關心與精美教學"}},{"@type":"Question","name":"如果我需要設計畫面，有提供服務嗎？","acceptedAnswer":{"@type":"Answer","text":"本店配有專案設計師，提供各式平面設計服務(需收費)"}},{"@type":"Question","name":"檔案格式有限制嗎？","acceptedAnswer":{"@type":"Answer","text":"服務項目眾多，要求的格式不盡相同，請事先詢問，或提供檔案做確認"}},{"@type":"Question","name":"AI檔是用Ai生成的檔案嗎？","acceptedAnswer":{"@type":"Answer","text":".ai檔是一種向量量，是一種軟體的特定格式，不是AI工具產生的圖檔喔"}},{"@type":"Question","name":"為什麼我有提供檔案，老闆說要調整還要收費？","acceptedAnswer":{"@type":"Answer","text":"數位顯示與印刷要求的檔案品質不同，為了最好的呈現，我們必須協助調整，且過程複雜。設計人員很辛苦，提供酬勞是為了讓我們有更好的服務"}}]}</script><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/styles/global.css">/* Design tokens + global base. Shared by root and future client pages (plan §3).
+   Deliberately minimal ("樸素樣式" per build-scope decision): clean, readable,
+   fast. This page is dog food — its own CWV must be near-perfect, so we avoid
+   heavy CJK webfonts (a subsetted one can still be MBs) and use a system-first
+   font stack with the OS's native Chinese face.
+
+   Visual language: white / ink / one action green, neutrals for everything
+   else. No gradients, no shadows, no decorative borders — grouping is done
+   with whitespace, hierarchy with type size × weight. The vibrant green is
+   reserved strictly for take-action-now buttons (call / LINE). */
+
+:root {
+  /* Font stack — system-first, no webfont download. Prefers native CJK faces. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC",
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* Palette — Clean & Premium Off-white theme with soft colors & shadows. */
+  --color-bg: #fcfbfa;           /* 全域背景底色 (Warm off-white) */
+  --color-surface: #ffffff;      /* 卡片主體色 (Pure white) */
+  --color-text: #1c1917;         /* 深炭黑 (Stone 900) */
+  --color-text-muted: #57534e;   /* 暖灰 (Stone 600) */
+  --color-border: #e7e5e4;       /* 溫和框線 (Stone 200) */
+  --color-accent: #0f172a;       /* 黑色裝飾 */
+  --color-accent-hover: #000000;
+  --color-accent-soft: #f5f5f4;  /* 輔助灰底 (Stone 100) */
+  --color-line: #06c755;         /* LINE action green */
+  --color-line-hover: #05b34c;
+  --color-brand-primary: #059669;/* 質感翡翠綠，用作 hover 與邊框聚焦 */
+
+  /* 陰影系統 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Type scale */
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+
+  --radius: 1rem;
+  --radius-sm: 0.625rem;
+  --content-width: 64rem;
+  --line-height: 1.75;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  /* 混合漸層：頂部淡綠與底部的極淡炭色漸變，配上精細點狀紋理 */
+  background-color: var(--color-bg);
+  background-image: 
+    radial-gradient(circle at 80% 100px, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 10% 800px, rgba(15, 23, 42, 0.02) 0%, transparent 40%),
+    radial-gradient(var(--color-border) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  font-weight: 700;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+/* Links stay ink; the underline (not color) marks them, so the green keeps
+   its exclusive take-action meaning. */
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: #b6b3aa;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Layout helpers */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--space-12);
+}
+
+.section {
+  padding-block: var(--space-12);
+}
+
+.section-subhead {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-8);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 3rem;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: var(--text-base);
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-line {
+  background: var(--color-line);
+  color: white;
+}
+
+.btn-line:hover {
+  background: var(--color-line-hover);
+  color: white;
+}
+
+.btn-quiet {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-quiet:hover {
+  background: var(--color-accent-soft);
+  border-color: #d6d3d1;
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/Hero.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.hero[data-astro-cid-6bjfnt4p] {
+  padding-block: var(--space-16) var(--space-12);
+}
+
+.hero-inner[data-astro-cid-6bjfnt4p] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+h1[data-astro-cid-6bjfnt4p] {
+  font-size: clamp(2.125rem, 5.5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  max-width: 24ch;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.hero-subhead[data-astro-cid-6bjfnt4p] {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+}
+
+.hero-scope[data-astro-cid-6bjfnt4p] {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  letter-spacing: .02em;
+}
+
+.hero-ctas[data-astro-cid-6bjfnt4p] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+@media (width <= 40rem) {
+  .hero[data-astro-cid-6bjfnt4p] {
+    padding-block: var(--space-12) var(--space-8);
+  }
+
+  .hero-ctas[data-astro-cid-6bjfnt4p] {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .hero-ctas[data-astro-cid-6bjfnt4p] .btn[data-astro-cid-6bjfnt4p] {
+    width: 100%;
+  }
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/NapBlock.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.nap-plaque[data-astro-cid-sycd3dtq] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius);
+  padding-block: var(--space-8);
+  padding-inline: var(--space-8);
+  margin-inline: calc(-1 * var(--space-8));
+}
+
+.nap-name[data-astro-cid-sycd3dtq] {
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.nap-address[data-astro-cid-sycd3dtq] {
+  color: var(--color-text-muted);
+}
+
+.nap-plaque[data-astro-cid-sycd3dtq] .btn[data-astro-cid-sycd3dtq] {
+  margin-top: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.nap-secondary[data-astro-cid-sycd3dtq] {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/HoursBlock.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.hours-subhead[data-astro-cid-movj2k4o] {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-4);
+}
+
+.hours-list[data-astro-cid-movj2k4o] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hours-row[data-astro-cid-movj2k4o] {
+  display: flex;
+  gap: var(--space-8);
+  padding-block: var(--space-1);
+}
+
+.hours-day[data-astro-cid-movj2k4o] {
+  width: 4.5rem;
+  flex-shrink: 0;
+}
+
+.hours-time[data-astro-cid-movj2k4o] {
+  font-variant-numeric: tabular-nums;
+}
+
+.hours-row[data-astro-cid-movj2k4o].closed {
+  color: var(--color-text-muted);
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/ServiceList.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.service-grid[data-astro-cid-4slwzzyi] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: var(--space-8);
+  row-gap: var(--space-8);
+}
+
+.service-item[data-astro-cid-4slwzzyi] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  transition: all .25s cubic-bezier(.4, 0, .2, 1);
+}
+
+.service-item[data-astro-cid-4slwzzyi]:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-brand-primary);
+}
+
+.service-item[data-astro-cid-4slwzzyi] h3[data-astro-cid-4slwzzyi] {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+}
+
+.service-item[data-astro-cid-4slwzzyi] p[data-astro-cid-4slwzzyi] {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+@media (width <= 48rem) {
+  .service-grid[data-astro-cid-4slwzzyi] {
+    grid-template-columns: 1fr;
+    row-gap: var(--space-6);
+  }
+
+  .service-item[data-astro-cid-4slwzzyi] {
+    padding: var(--space-6);
+  }
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/FaqBlock.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.faq-list[data-astro-cid-j42oi42f] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 44rem;
+}
+
+.faq-item[data-astro-cid-j42oi42f] {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-6);
+  transition: all .2s;
+}
+
+.faq-item[data-astro-cid-j42oi42f]:hover {
+  border-color: var(--color-brand-primary);
+}
+
+.faq-item[data-astro-cid-j42oi42f][open] {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-brand-primary);
+}
+
+summary[data-astro-cid-j42oi42f] {
+  font-weight: 700;
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  outline: none;
+}
+
+summary[data-astro-cid-j42oi42f]::-webkit-details-marker {
+  display: none;
+}
+
+summary[data-astro-cid-j42oi42f]:after {
+  content: "＋";
+  color: var(--color-text-muted);
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.faq-item[data-astro-cid-j42oi42f][open] summary[data-astro-cid-j42oi42f]:after {
+  content: "－";
+}
+
+.faq-item[data-astro-cid-j42oi42f] p[data-astro-cid-j42oi42f] {
+  padding-top: var(--space-4);
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-accent-soft);
+  margin-top: var(--space-3);
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/components/shared/MapEmbed.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.map[data-astro-cid-4f6d4cgi] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.map-frame[data-astro-cid-4f6d4cgi] {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.map-frame[data-astro-cid-4f6d4cgi] iframe[data-astro-cid-4f6d4cgi] {
+  display: block;
+}
+</style><style data-vite-dev-id="/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/src/pages/[client]/index.astro?astro&amp;type=style&amp;index=0&amp;lang.css">.visit-grid[data-astro-cid-svibe53g] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--space-12);
+  align-items: start;
+}
+
+.visit-info[data-astro-cid-svibe53g] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+@media (width <= 48rem) {
+  .visit-grid[data-astro-cid-svibe53g] {
+    grid-template-columns: 1fr;
+    row-gap: var(--space-8);
+  }
+}
+</style><script type="module" src="/@vite/client"></script><script type="module" src="/@id/astro/runtime/client/dev-toolbar/entrypoint.js"></script><script>window.__astro_dev_toolbar__ = {"root":"/Users/coplukhsu/Documents/Project/thinkSomething/localSEO/chuetiam-site/","version":"7.0.4","latestAstroVersion":"7.0.7","debugInfo":"Astro                    v7.0.4\nNode                     v24.3.0\nSystem                   macOS (x64)\nPackage Manager          npm\nOutput                   static\nAdapter                  none\nIntegrations             @astrojs/sitemap"}</script><script type="module" src="/src/styles/global.css"></script><script type="module" src="/src/components/shared/Hero.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/components/shared/NapBlock.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/components/shared/HoursBlock.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/components/shared/ServiceList.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/components/shared/FaqBlock.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/components/shared/MapEmbed.astro?astro&type=style&index=0&lang.css"></script><script type="module" src="/src/pages/[client]/index.astro?astro&type=style&index=0&lang.css"></script></head><body><main data-astro-cid-svibe53g><section class="hero" data-astro-cid-6bjfnt4p><div class="container hero-inner" data-astro-cid-6bjfnt4p><h1 data-astro-cid-6bjfnt4p>正泰廣告社｜台中大里招牌設計‧30年在地</h1><p class="hero-subhead" data-astro-cid-6bjfnt4p>台中大里專業廣告設計製作。在地深耕超過三十年，專注於為各類店面與企業提供高品質的視覺宣傳解決方案。<br data-astro-cid-6bjfnt4p>核心業務包含：專業招牌燈箱、店面看板工程、電腦割字、精緻銅字與壓克力字製作。<br data-astro-cid-6bjfnt4p>並提供全方位的商業印刷服務，包括名片、菜單、傳單、三聯單、紅布條及各式宣傳印刷品設計與輸出。<br data-astro-cid-6bjfnt4p>服務範圍涵蓋台中、大里、太平、霧峰、烏日等地區，從前期設計到後期安裝一站式完成。<br data-astro-cid-6bjfnt4p>We also service in English and Chinese.</p><p class="hero-scope" data-astro-cid-6bjfnt4p>服務範圍：台中、大里、太平、霧峰、烏日</p><div class="hero-ctas" data-astro-cid-6bjfnt4p><a class="btn btn-line" href="tel:0933194646" data-track="click_call" data-astro-cid-6bjfnt4p>打電話 0933 194 646</a><a class="btn btn-quiet" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" data-track="click_directions" data-astro-cid-6bjfnt4p>導航到店</a></div></div></section><section class="section services" id="services" data-astro-cid-4slwzzyi><div class="container" data-astro-cid-4slwzzyi><h2 class="section-subhead" data-astro-cid-4slwzzyi>服務項目</h2><ul class="service-grid" data-astro-cid-4slwzzyi><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>專業招牌燈箱</h3><p data-astro-cid-4slwzzyi>中空板、無接縫、壓克力及 LED 燈箱製作，提升店面全天候辨識度</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>店面看板工程</h3><p data-astro-cid-4slwzzyi>各類外牆廣告看板、防颱帆布與鐵架施工</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>精緻銅字與立體字</h3><p data-astro-cid-4slwzzyi>金屬銅字、壓克力立體字，適用企業形象牆、門牌或精品標示</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>商業名片</h3><p data-astro-cid-4slwzzyi>多種紙材與加工選擇，從極簡風格到高質感設計印刷</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>菜單與傳單</h3><p data-astro-cid-4slwzzyi>防水菜單、折頁傳單與宣傳 DM 製作</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>三聯單與單據</h3><p data-astro-cid-4slwzzyi>客製化聯單、估價單及收據印刷，版面清晰複寫流暢</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>宣傳印刷品設計</h3><p data-astro-cid-4slwzzyi>從專業設計排版到高品質輸出，一站式解決方案</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>廣告紅布條</h3><p data-astro-cid-4slwzzyi>彩色布條與旗幟製作，適合開幕、特賣或促銷活動</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>電腦割字</h3><p data-astro-cid-4slwzzyi>精密割字服務，防水耐用，適用玻璃貼、牆面標示或營業時間說明</p></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>大型看板帆布</h3><p data-astro-cid-4slwzzyi>高品質大圖噴墨帆布，適合大面積外牆廣告、工地圍籬或活動</p></li></ul></div></section><section class="section services" id="features" data-astro-cid-4slwzzyi><div class="container" data-astro-cid-4slwzzyi><h2 class="section-subhead" data-astro-cid-4slwzzyi>為什麼選我們</h2><ul class="service-grid" data-astro-cid-4slwzzyi><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>在地深耕超過三十年</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>設計到安裝一站式服務</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>頭家親切、耐心、專業</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>價格公道實在、風雨無阻使命必達</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>製作快速，還會教客人如何操作</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>5.0 滿分口碑，在地有口皆碑</h3></li><li class="service-item" data-astro-cid-4slwzzyi><h3 data-astro-cid-4slwzzyi>老闆娘熱情好客又可愛</h3></li></ul></div></section><section class="section faq" id="faq" data-astro-cid-j42oi42f><div class="container" data-astro-cid-j42oi42f><h2 class="section-subhead" data-astro-cid-j42oi42f>常見問題</h2><div class="faq-list" data-astro-cid-j42oi42f><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>可以急件製作嗎？</summary><p data-astro-cid-j42oi42f>請來訊洽詢</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>招牌吊工施作範圍到哪裡？彰化、南投可以嗎？</summary><p data-astro-cid-j42oi42f>主力服務範圍在台中/大里/太平/霧峰/烏日，但其他地區請來訊洽詢，老闆會熱心的服務</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>有最小接單量或起訂金額嗎？</summary><p data-astro-cid-j42oi42f>服務項目眾多，請來訊洽詢</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>可以只割字、我自己貼嗎？</summary><p data-astro-cid-j42oi42f>可以，老闆還會熱情關心與精美教學</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>如果我需要設計畫面，有提供服務嗎？</summary><p data-astro-cid-j42oi42f>本店配有專案設計師，提供各式平面設計服務(需收費)</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>檔案格式有限制嗎？</summary><p data-astro-cid-j42oi42f>服務項目眾多，要求的格式不盡相同，請事先詢問，或提供檔案做確認</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>AI檔是用Ai生成的檔案嗎？</summary><p data-astro-cid-j42oi42f>.ai檔是一種向量量，是一種軟體的特定格式，不是AI工具產生的圖檔喔</p></details><details class="faq-item" data-astro-cid-j42oi42f><summary data-astro-cid-j42oi42f>為什麼我有提供檔案，老闆說要調整還要收費？</summary><p data-astro-cid-j42oi42f>數位顯示與印刷要求的檔案品質不同，為了最好的呈現，我們必須協助調整，且過程複雜。設計人員很辛苦，提供酬勞是為了讓我們有更好的服務</p></details></div></div></section><section class="section visit" data-astro-cid-svibe53g><div class="container visit-grid" data-astro-cid-svibe53g><div class="visit-info" data-astro-cid-svibe53g><div class="nap-plaque" id="contact" data-astro-cid-sycd3dtq><h2 class="nap-name" data-astro-cid-sycd3dtq>正泰廣告社</h2><a class="nap-address" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" target="_blank" rel="noopener" data-track="click_directions" data-astro-cid-sycd3dtq>412臺中市大里區新里里新興路33號</a><a class="btn btn-line" href="tel:0933194646" data-track="click_call" data-astro-cid-sycd3dtq>電話 0933 194 646</a><p class="nap-secondary" data-astro-cid-sycd3dtq>市話 (04) 2406-4200</p></div><div class="hours" id="hours" data-astro-cid-movj2k4o><h2 class="hours-subhead" data-astro-cid-movj2k4o>營業時間</h2><ul class="hours-list" data-astro-cid-movj2k4o><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期一</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期二</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期三</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期四</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期五</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期六</span><span class="hours-time" data-astro-cid-movj2k4o>09:00–20:00</span></li><li class="hours-row closed" data-astro-cid-movj2k4o><span class="hours-day" data-astro-cid-movj2k4o>星期日</span><span class="hours-time" data-astro-cid-movj2k4o>公休</span></li></ul></div></div><div class="map" id="map" data-astro-cid-4f6d4cgi><div class="map-frame" data-astro-cid-4f6d4cgi><iframe title="Google 地圖位置" src="https://maps.google.com/maps?q=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F&amp;output=embed" width="100%" height="360" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-astro-cid-4f6d4cgi></iframe></div><a class="btn btn-quiet" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%AD%A3%E6%B3%B0%E5%BB%A3%E5%91%8A%E7%A4%BE%20412%E8%87%BA%E4%B8%AD%E5%B8%82%E5%A4%A7%E9%87%8C%E5%8D%80%E6%96%B0%E9%87%8C%E9%87%8C%E6%96%B0%E8%88%88%E8%B7%AF33%E8%99%9F" target="_blank" rel="noopener" data-track="click_reviews" data-astro-cid-4f6d4cgi>在 Google 地圖查看評論與導航</a></div></div></section></main></body></html>
